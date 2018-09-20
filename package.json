@@ -23,6 +23,7 @@
         "eslint": "^4.5.0",
         "eslint-config-prettier": "latest",
         "eslint-plugin-prettier": "latest",
+        "git-branch-is": "^2.0.0",
         "husky": "^0.14.3",
         "lint-staged": "^4.0.4",
         "nyc": "^11.1.0",
@@ -107,7 +108,7 @@
     "scripts": {
         "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
         "lint": "xo && remark . -qfo",
-        "precommit": "lint-staged && npm test",
+        "precommit": "if git-branch-is master >/dev/null 2>&1; then lint-staged && npm test; else echo \"Not on master, skipping precommit\"; fi",
         "test": "npm run lint && npm run test-coverage",
         "test:watch": "ava --watch",
         "test-coverage": "cross-env NODE_ENV=test nyc ava"
