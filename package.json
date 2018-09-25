@@ -2,13 +2,13 @@
     "name": "hebo",
     "description": "Simple Event Sourcing Container",
     "version": "1.0.0",
-    "author": "Stephen Caldwell <steve@campusexplorer.com> ()",
+    "author": "Steve Caldwell <scaldwell@gmail.com>",
     "bugs": {
         "url": "https://github.com/stevecaldwell77/hebo-js/issues",
-        "email": "steve@campusexplorer.com"
+        "email": "scaldwell@gmail.com"
     },
     "contributors": [
-        "Stephen Caldwell <steve@campusexplorer.com> ()"
+        "Steve Caldwell <scaldwell@gmail.com>"
     ],
     "dependencies": {
         "esm": "^3.0.84",

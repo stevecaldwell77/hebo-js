@@ -42,14 +42,14 @@ yarn add hebo
 
 ## Contributors
 
-| Name                 |
-| -------------------- |
-| **Stephen Caldwell** |
+| Name               |
+| ------------------ |
+| **Steve Caldwell** |
 
 
 ## License
 
-[MIT](LICENSE) © Stephen Caldwell
+[MIT](LICENSE) © Steve Caldwell
 
 
 ## 
