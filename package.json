@@ -13,8 +13,7 @@
     "dependencies": {
         "esm": "^3.0.84",
         "immer": "^1.7.2",
-        "lodash.curry": "^4.1.1",
-        "lodash.isnil": "^4.0.0"
+        "lodash": "^4.17.11"
     },
     "ava": {
         "require": [
