@@ -11,7 +11,10 @@
         "Stephen Caldwell <steve@campusexplorer.com> ()"
     ],
     "dependencies": {
-        "esm": "^3.0.84"
+        "esm": "^3.0.84",
+        "immer": "^1.7.2",
+        "lodash.curry": "^4.1.1",
+        "lodash.isnil": "^4.0.0"
     },
     "ava": {
         "require": [
