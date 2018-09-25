@@ -1,6 +1,6 @@
 {
     "name": "hebo",
-    "description": "Simple CQRS/ES Runner",
+    "description": "Simple Event Sourcing Container",
     "version": "1.0.0",
     "author": "Stephen Caldwell <steve@campusexplorer.com> ()",
     "bugs": {
