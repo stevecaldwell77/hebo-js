@@ -92,7 +92,7 @@
                 {
                     "singleQuote": true,
                     "bracketSpacing": true,
-                    "trailingComma": "none",
+                    "trailingComma": "all",
                     "useTabs": false,
                     "tabWidth": 4
                 }
