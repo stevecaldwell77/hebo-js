@@ -1,10 +1,10 @@
 {
-    "name": "cqrs-es-simple",
+    "name": "hebo",
     "description": "Simple CQRS/ES Runner",
     "version": "1.0.0",
     "author": "Stephen Caldwell <steve@campusexplorer.com> ()",
     "bugs": {
-        "url": "https://github.com/stevecaldwell77/cqrs-es-simple/issues",
+        "url": "https://github.com/stevecaldwell77/hebo-js/issues",
         "email": "steve@campusexplorer.com"
     },
     "contributors": [
@@ -42,7 +42,7 @@
     "engines": {
         "node": ">=8.3"
     },
-    "homepage": "https://github.com/stevecaldwell77/cqrs-es-simple",
+    "homepage": "https://github.com/stevecaldwell77/hebo-js",
     "keywords": [
         "cqrs",
         "event-sourcing",
@@ -78,7 +78,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/stevecaldwell77/cqrs-es-simple"
+        "url": "https://github.com/stevecaldwell77/hebo-js"
     },
     "xo": {
         "extends": "prettier",

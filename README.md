@@ -1,11 +1,11 @@
-# cqrs-es-simple
+# hebo
 
-[![build status](https://img.shields.io/travis/stevecaldwell77/cqrs-es-simple.svg)](https://travis-ci.org/stevecaldwell77/cqrs-es-simple)
-[![code coverage](https://img.shields.io/codecov/c/github/stevecaldwell77/cqrs-es-simple.svg)](https://codecov.io/gh/stevecaldwell77/cqrs-es-simple)
+[![build status](https://img.shields.io/travis/stevecaldwell77/hebo-js.svg)](https://travis-ci.org/stevecaldwell77/hebo-js)
+[![code coverage](https://img.shields.io/codecov/c/github/stevecaldwell77/hebo-js.svg)](https://codecov.io/gh/stevecaldwell77/hebo-js)
 [![code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![made with lass](https://img.shields.io/badge/made_with-lass-95CC28.svg)](https://lass.js.org)
-[![license](https://img.shields.io/github/license/stevecaldwell77/cqrs-es-simple.svg)](LICENSE)
+[![license](https://img.shields.io/github/license/stevecaldwell77/hebo-js.svg)](LICENSE)
 
 > Simple CQRS/ES Runner
 
@@ -23,25 +23,20 @@
 [npm][]:
 
 ```sh
-npm install cqrs-es-simple
+npm install hebo
 ```
 
 [yarn][]:
 
 ```sh
-yarn add cqrs-es-simple
+yarn add hebo
 ```
 
 
 ## Usage
 
 ```js
-const CqrsEsSimple = require('cqrs-es-simple');
-
-const cqrsEsSimple = new CqrsEsSimple();
-
-console.log(cqrsEsSimple.renderName());
-// script
+// TBD
 ```
 
 
