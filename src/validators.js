@@ -25,3 +25,42 @@ module.exports.validateEvent = event => {
         throw new InvalidEventError(message, event);
     }
 };
+
+module.exports.eventRepositorySchema = Joi.object()
+    .keys({
+        getEvents: Joi.func()
+            .minArity(2)
+            .maxArity(3)
+            .required(),
+        writeEvent: Joi.func()
+            .arity(3)
+            .required(),
+    })
+    .unknown();
+
+module.exports.snapshotRepositorySchema = Joi.object()
+    .keys({
+        getSnapshot: Joi.func()
+            .arity(2)
+            .required(),
+        writeSnapshot: Joi.func()
+            .arity(3)
+            .required(),
+    })
+    .unknown();
+
+module.exports.notificationHandlerSchema = Joi.object()
+    .keys({
+        invalidEventsFound: Joi.func()
+            .arity(1)
+            .required(),
+    })
+    .unknown();
+
+module.exports.authorizerSchema = Joi.object()
+    .keys({
+        assert: Joi.func()
+            .arity(2)
+            .required(),
+    })
+    .unknown();

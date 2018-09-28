@@ -2,9 +2,16 @@ const EventEmitter = require('events');
 const has = require('lodash/has');
 const mapValues = require('lodash/mapValues');
 const curry = require('lodash/fp/curry');
+const Joi = require('joi');
 const getProjection = require('./get-projection');
 const updateSnapshot = require('./update-snapshot');
 const { UnknownAggregateError } = require('./errors');
+const {
+    eventRepositorySchema,
+    snapshotRepositorySchema,
+    notificationHandlerSchema,
+    authorizerSchema,
+} = require('./validators');
 
 // Creates an EventEmitter object and wires up listeners
 const createNotifier = notificationHandler => {
@@ -76,27 +83,27 @@ const getAggregate = curry((aggregates, aggregateName) => {
     return aggregates[aggregateName];
 });
 
+const connectSchema = Joi.object().keys({
+    eventRepository: eventRepositorySchema.required(),
+    snapshotRepository: snapshotRepositorySchema.required(),
+    notificationHandler: notificationHandlerSchema.required(),
+    authorizer: authorizerSchema.required(),
+    user: Joi.any(),
+});
+
 module.exports = class Hebo {
     constructor({ aggregates }) {
         // TODO: validate aggregates
         this.aggregates = aggregates;
     }
 
-    connect({
-        eventRepository,
-        snapshotRepository,
-        notificationHandler,
-        authorizer,
-        user,
-    }) {
-        // TODO: validate params
-
+    // NOTE: see connectSchema for allowed params
+    connect(params) {
+        Joi.assert(params, connectSchema, 'Invalid parameters to connect()');
+        const { notificationHandler } = params;
         const notifier = createNotifier(notificationHandler);
         const connectedAggregates = connectAggregates({
-            eventRepository,
-            snapshotRepository,
-            authorizer,
-            user,
+            ...params,
             aggregates: this.aggregates,
             notifier,
         });
