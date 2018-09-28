@@ -21,6 +21,7 @@
     "devDependencies": {
         "auto-bind": "^1.1.0",
         "ava": "^0.25.0",
+        "casual": "^1.5.19",
         "codecov": "^2.3.0",
         "cross-env": "^5.0.5",
         "eslint": "^4.5.0",
@@ -33,6 +34,8 @@
         "prettier": "^1.6.1",
         "remark-cli": "^4.0.0",
         "remark-preset-github": "^0.0.6",
+        "shortid": "^2.2.13",
+        "sinon": "^6.3.4",
         "xo": "latest"
     },
     "engines": {
