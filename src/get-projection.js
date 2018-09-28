@@ -178,11 +178,13 @@ Parameters:
 
   notifier: EventEmitter object. Notifications emitted:
     * 'invalidEventsFound' - an invalid event was found in the build projection.
-    * TODO: unauthorizedAccess
 
-  authorizer: TODO - document
+  user: User object to use for authorization.
 
-  user: TODO - document
+  assertAuthorized: Function to assert that user is authorized to perform
+    operation. Should throw an error if not.
+    Signature: (user, operation) -> Promise(void)
+    operation will be: { type: 'getProjection', aggregateName, aggregateId }
 
 Return value: Promise containing projection.
 
@@ -196,10 +198,15 @@ const getProjection = async ({
     getSnapshot,
     getEvents,
     notifier,
-    // authorizer,
-    // user,
+    assertAuthorized,
+    user,
 }) => {
-    // TODO: authorize user
+    // authorize user
+    await assertAuthorized(user, {
+        type: 'getProjection',
+        aggregateName,
+        aggregateId,
+    });
 
     // Get the starting projection
     const prevProjection = await getPrevProjection({

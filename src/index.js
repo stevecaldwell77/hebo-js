@@ -33,7 +33,7 @@ const connectAggregate = ({
             getSnapshot: snapshotRepository.getSnapshot,
             getEvents: eventRepository.getEvents,
             notifier,
-            authorizer,
+            assertAuthorized: authorizer.assert,
             user,
         });
     },

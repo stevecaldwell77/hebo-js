@@ -6,15 +6,13 @@ const EventRepository = require('./helpers/event-repository-inmemory');
 const SnapshotRepository = require('./helpers/snapshot-repository-inmemory');
 const NotificationHandler = require('./helpers/notification-handler-inmemory');
 const libraryAggregate = require('./helpers/aggregates/library');
+const { users, getAuthorizer } = require('./helpers/authorizer');
 
 const hebo = new Hebo({
     aggregates: {
         library: libraryAggregate,
     },
 });
-
-const authorizerPass = { assert: () => true };
-const userJohnDoe = { userId: shortid.generate(), username: 'jdoe' };
 
 const getEmptyEventRepository = () => new EventRepository({ library: {} });
 
@@ -29,7 +27,7 @@ const setupBasicLibrary = (name, city) => {
         type: 'NAME_SET',
         payload: { name },
         metadata: {
-            user: userJohnDoe,
+            user: users.superSally,
         },
         version: 1,
     });
@@ -38,7 +36,7 @@ const setupBasicLibrary = (name, city) => {
         type: 'CITY_NAME_SET',
         payload: { name: city },
         metadata: {
-            user: userJohnDoe,
+            user: users.superSally,
         },
         version: 2,
     });
@@ -50,8 +48,8 @@ const runGetProjection = async ({
     aggregateId,
     eventRepository,
     snapshotRepository,
-    authorizer = authorizerPass,
-    user = userJohnDoe,
+    authorizer,
+    user = users.superSally,
 }) => {
     const notificationHandler = new NotificationHandler();
     const getAggregate = hebo.connect({
@@ -86,12 +84,12 @@ const testGetProjection = async ({
     aggregateId,
     eventRepository,
     snapshotRepository,
+    authorizer,
+    user,
     expectedProjection,
     expectedGetSnapshotCalls,
     expectedGetEventsCalls,
     expectedNotifications,
-    authorizer,
-    user,
 }) => {
     const {
         projection,
@@ -138,11 +136,13 @@ const testGetProjection = async ({
 // Calling getProjection() for an aggregate that has no events
 test('aggregate does not exist', async t => {
     const libraryId = shortid.generate();
+    const authorizer = getAuthorizer(libraryId);
     const { projection, notifications } = await runGetProjection({
         aggregateName: 'library',
         aggregateId: libraryId,
         eventRepository: getEmptyEventRepository(),
         snapshotRepository: getEmptySnapshotRepository(),
+        authorizer,
     });
     t.is(projection, undefined, 'returns undefined for unknown aggregate id');
     t.deepEqual(notifications, [], 'no notifications');
@@ -155,6 +155,7 @@ test('aggregate with no snapshot', async t => {
         'Los Angeles',
     );
     const snapshotRepository = getEmptySnapshotRepository();
+    const authorizer = getAuthorizer(libraryId);
 
     await testGetProjection({
         t,
@@ -163,6 +164,7 @@ test('aggregate with no snapshot', async t => {
         aggregateId: libraryId,
         eventRepository,
         snapshotRepository,
+        authorizer,
         expectedProjection: {
             state: {
                 libraryId,
@@ -188,6 +190,7 @@ test('aggregate with snapshots', async t => {
         'Los Angeles',
     );
     const snapshotRepository = getEmptySnapshotRepository();
+    const authorizer = getAuthorizer(libraryId);
 
     // Save snapshot with basic library (which is version 2)
     const { updateSnapshot } = await runGetProjection({
@@ -195,6 +198,7 @@ test('aggregate with snapshots', async t => {
         aggregateId: libraryId,
         eventRepository,
         snapshotRepository,
+        authorizer,
     });
     await updateSnapshot();
 
@@ -207,6 +211,7 @@ test('aggregate with snapshots', async t => {
         aggregateId: libraryId,
         eventRepository,
         snapshotRepository,
+        authorizer,
         expectedProjection: {
             state: {
                 libraryId,
@@ -230,7 +235,7 @@ test('aggregate with snapshots', async t => {
         type: 'CITY_NAME_SET',
         payload: { name: 'Playa Del Rey' },
         metadata: {
-            user: userJohnDoe,
+            user: users.superSally,
         },
         version: 3,
     });
@@ -242,6 +247,7 @@ test('aggregate with snapshots', async t => {
         aggregateId: libraryId,
         eventRepository,
         snapshotRepository,
+        authorizer,
         expectedProjection: {
             state: {
                 libraryId,
@@ -267,6 +273,7 @@ test('handing bad events', async t => {
         'Los Angeles',
     );
     const snapshotRepository = getEmptySnapshotRepository();
+    const authorizer = getAuthorizer(libraryId);
 
     // Add some invalid events that theoretically should not have been allowed
     // into the event store. But maybe they were valid at the time, and our
@@ -278,7 +285,7 @@ test('handing bad events', async t => {
         type: 'CITY_NAME_SET',
         payload: {},
         metadata: {
-            user: userJohnDoe,
+            user: users.superSally,
         },
         version: 3,
     };
@@ -290,7 +297,7 @@ test('handing bad events', async t => {
         type: 'ACTIVATED',
         payload: {},
         metadata: {
-            user: userJohnDoe,
+            user: users.superSally,
         },
         version: 4,
     };
@@ -303,7 +310,7 @@ test('handing bad events', async t => {
         type: 'NAME_SET',
         payload: { name: 'Rodgers Branch' },
         metadata: {
-            user: userJohnDoe,
+            user: users.superSally,
         },
         version: 5,
     });
@@ -335,6 +342,7 @@ test('handing bad events', async t => {
         aggregateId: libraryId,
         eventRepository,
         snapshotRepository,
+        authorizer,
         expectedProjection: {
             state: {
                 libraryId,
@@ -399,7 +407,7 @@ test('handing bad events', async t => {
             name: 'Playa Vista',
         },
         metadata: {
-            user: userJohnDoe,
+            user: users.superSally,
             resolvesEventIds: [invalidEvent1.eventId, invalidEvent3.eventId],
         },
         version: 7,
@@ -411,7 +419,7 @@ test('handing bad events', async t => {
         type: 'DEACTIVATED',
         payload: {},
         metadata: {
-            user: userJohnDoe,
+            user: users.superSally,
             resolvesEventIds: [invalidEvent2.eventId],
         },
         version: 8,
@@ -429,6 +437,7 @@ test('handing bad events', async t => {
         aggregateId: libraryId,
         eventRepository,
         snapshotRepository,
+        authorizer,
         expectedProjection: {
             state: {
                 libraryId,
@@ -458,4 +467,54 @@ test('handing bad events', async t => {
         expectedGetEventsCalls: [['library', libraryId, 6]],
         expectedNotifications: [],
     });
+});
+
+test('authorization', async t => {
+    const libraryId1 = shortid.generate();
+    const libraryId2 = shortid.generate();
+    const eventRepository = getEmptyEventRepository();
+    const snapshotRepository = getEmptySnapshotRepository();
+    const authorizer = getAuthorizer(libraryId1);
+
+    const run = (libraryId, user) =>
+        runGetProjection({
+            aggregateName: 'library',
+            aggregateId: libraryId,
+            eventRepository,
+            snapshotRepository,
+            authorizer,
+            user,
+        });
+
+    await t.notThrows(
+        run(libraryId1, users.superSally),
+        'superuser able to run getProjection() on first library',
+    );
+
+    await t.notThrows(
+        run(libraryId1, users.marySmith),
+        'read-all user is able to run getProjection() on first library',
+    );
+
+    await t.notThrows(
+        run(libraryId1, users.johnDoe),
+        'library-specific user is able to run getProjection() on first library',
+    );
+
+    await t.notThrows(
+        run(libraryId2, users.superSally),
+        'superuser able to run getProjection() on second library',
+    );
+
+    await t.notThrows(
+        run(libraryId2, users.marySmith),
+        'read-all user is able to run getProjection() on second library',
+    );
+
+    await t.throws(
+        run(libraryId2, users.johnDoe),
+        Error,
+        'error thrown when library-specific user runs getProjection() on a ' +
+            'different library',
+    );
 });
