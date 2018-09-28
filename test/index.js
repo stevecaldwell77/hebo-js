@@ -8,6 +8,82 @@ const NotificationHandler = require('./helpers/notification-handler-inmemory');
 const libraryAggregate = require('./helpers/aggregates/library');
 const { users, getAuthorizer } = require('./helpers/authorizer');
 
+test('constructor()', t => {
+    const validParams = {
+        aggregates: {
+            library: libraryAggregate,
+        },
+    };
+
+    t.notThrows(
+        () => new Hebo(validParams),
+        'can create Hebo with valid parameters',
+    );
+
+    t.throws(
+        () => new Hebo(omit(validParams, 'aggregates')),
+        /"aggregates" is required/,
+        'aggregates required',
+    );
+
+    t.throws(
+        () => new Hebo({ ...validParams, aggregates: { library: {} } }),
+        /"projection" is required/,
+        'aggregates must have a projection',
+    );
+
+    t.throws(
+        () =>
+            new Hebo({
+                ...validParams,
+                aggregates: {
+                    library: {
+                        projection: omit(
+                            libraryAggregate.projection,
+                            'initialState',
+                        ),
+                    },
+                },
+            }),
+        /"initialState" is required/,
+        'projection must have initialState()',
+    );
+
+    t.throws(
+        () =>
+            new Hebo({
+                ...validParams,
+                aggregates: {
+                    library: {
+                        projection: omit(
+                            libraryAggregate.projection,
+                            'applyEvent',
+                        ),
+                    },
+                },
+            }),
+        /"applyEvent" is required/,
+        'projection must have applyEvent()',
+    );
+
+    t.throws(
+        () =>
+            new Hebo({
+                ...validParams,
+                aggregates: {
+                    library: {
+                        projection: omit(
+                            libraryAggregate.projection,
+                            'validateState',
+                        ),
+                    },
+                },
+            }),
+        /"validateState" is required/,
+        'projection must have validateState()',
+    );
+});
+
 test('connect()', t => {
     const hebo = new Hebo({
         aggregates: {

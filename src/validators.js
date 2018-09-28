@@ -28,39 +28,39 @@ module.exports.validateEvent = event => {
 
 module.exports.eventRepositorySchema = Joi.object()
     .keys({
-        getEvents: Joi.func()
-            .minArity(2)
-            .maxArity(3)
-            .required(),
-        writeEvent: Joi.func()
-            .arity(3)
-            .required(),
+        getEvents: Joi.func().required(),
+        writeEvent: Joi.func().required(),
     })
     .unknown();
 
 module.exports.snapshotRepositorySchema = Joi.object()
     .keys({
-        getSnapshot: Joi.func()
-            .arity(2)
-            .required(),
-        writeSnapshot: Joi.func()
-            .arity(3)
-            .required(),
+        getSnapshot: Joi.func().required(),
+        writeSnapshot: Joi.func().required(),
     })
     .unknown();
 
 module.exports.notificationHandlerSchema = Joi.object()
     .keys({
-        invalidEventsFound: Joi.func()
-            .arity(1)
-            .required(),
+        invalidEventsFound: Joi.func().required(),
     })
     .unknown();
 
 module.exports.authorizerSchema = Joi.object()
     .keys({
-        assert: Joi.func()
-            .arity(2)
+        assert: Joi.func().required(),
+    })
+    .unknown();
+
+module.exports.aggregateSchema = Joi.object()
+    .keys({
+        projection: Joi.object()
+            .keys({
+                initialState: Joi.func().required(),
+                applyEvent: Joi.func().required(),
+                validateState: Joi.func().required(),
+            })
+            .unknown()
             .required(),
     })
     .unknown();

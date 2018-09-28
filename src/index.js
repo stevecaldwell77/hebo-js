@@ -11,6 +11,7 @@ const {
     snapshotRepositorySchema,
     notificationHandlerSchema,
     authorizerSchema,
+    aggregateSchema,
 } = require('./validators');
 
 // Creates an EventEmitter object and wires up listeners
@@ -83,6 +84,12 @@ const getAggregate = curry((aggregates, aggregateName) => {
     return aggregates[aggregateName];
 });
 
+const heboSchema = Joi.object().keys({
+    aggregates: Joi.object()
+        .pattern(Joi.string(), aggregateSchema)
+        .required(),
+});
+
 const connectSchema = Joi.object().keys({
     eventRepository: eventRepositorySchema.required(),
     snapshotRepository: snapshotRepositorySchema.required(),
@@ -92,9 +99,13 @@ const connectSchema = Joi.object().keys({
 });
 
 module.exports = class Hebo {
-    constructor({ aggregates }) {
-        // TODO: validate aggregates
-        this.aggregates = aggregates;
+    constructor(params) {
+        Joi.assert(
+            params,
+            heboSchema,
+            'Invalid parameters in Hebo constructor',
+        );
+        this.aggregates = params.aggregates;
     }
 
     // NOTE: see connectSchema for allowed params
