@@ -371,7 +371,7 @@ test('handing bad events', async t => {
                     eventId: invalidEvent3.eventId,
                     error: {
                         name: 'InvalidEventError',
-                        message: 'event missing "metadata"',
+                        message: '"metadata" is required',
                     },
                 },
             ],

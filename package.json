@@ -12,6 +12,7 @@
     ],
     "dependencies": {
         "immer": "^1.7.2",
+        "joi": "^13.6.0",
         "lodash": "^4.17.11"
     },
     "ava": {
