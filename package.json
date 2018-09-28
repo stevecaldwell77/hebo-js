@@ -11,14 +11,10 @@
         "Steve Caldwell <scaldwell@gmail.com>"
     ],
     "dependencies": {
-        "esm": "^3.0.84",
         "immer": "^1.7.2",
         "lodash": "^4.17.11"
     },
     "ava": {
-        "require": [
-            "esm"
-        ],
         "failFast": true,
         "verbose": true
     },
