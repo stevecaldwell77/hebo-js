@@ -51,7 +51,7 @@
     "license": "MIT",
     "lint-staged": {
         "*.{js,jsx,mjs,ts,tsx,css,less,scss,json,graphql}": [
-            "prettier --write --single-quote --trailing-comma none --tab-width 4",
+            "prettier --write",
             "git add"
         ],
         "*.md": [
@@ -80,6 +80,13 @@
         "type": "git",
         "url": "https://github.com/stevecaldwell77/hebo-js"
     },
+    "prettier": {
+        "singleQuote": true,
+        "bracketSpacing": true,
+        "trailingComma": "all",
+        "useTabs": false,
+        "tabWidth": 4
+    },
     "xo": {
         "extends": "prettier",
         "plugins": [
@@ -89,16 +96,7 @@
             "sourceType": "module"
         },
         "rules": {
-            "prettier/prettier": [
-                "error",
-                {
-                    "singleQuote": true,
-                    "bracketSpacing": true,
-                    "trailingComma": "all",
-                    "useTabs": false,
-                    "tabWidth": 4
-                }
-            ],
+            "prettier/prettier": "error",
             "max-len": [
                 "error",
                 {
