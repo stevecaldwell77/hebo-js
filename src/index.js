@@ -51,6 +51,8 @@ const connectAggregate = ({
             aggregateId,
             getProjection: this.getProjection.bind(this),
             writeSnapshot: snapshotRepository.writeSnapshot,
+            assertAuthorized: authorizer.assert,
+            user,
         });
     },
 });

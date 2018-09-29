@@ -1,4 +1,5 @@
 const shortid = require('shortid');
+const { UnauthorizedError } = require('../../src/errors');
 
 /*
 
@@ -27,18 +28,19 @@ const users = {
     },
 };
 
+const readOnlyOperations = new Set(['getProjection']);
+
 const isAuthorized = ({ operation, user, libraryId }) => {
     switch (user.userId) {
         case users.superSally.userId:
             return true;
         case users.marySmith.userId:
             return (
-                operation.type === 'getProjection' &&
+                readOnlyOperations.has(operation.type) &&
                 operation.aggregateName === 'library'
             );
         case users.johnDoe.userId:
             return (
-                operation.type === 'getProjection' &&
                 operation.aggregateName === 'library' &&
                 operation.aggregateId === libraryId
             );
@@ -47,17 +49,10 @@ const isAuthorized = ({ operation, user, libraryId }) => {
     }
 };
 
-const unauthError = ({ operation, user }) =>
-    new Error(
-        `user ${user.email} is not allowed to call ${operation.type} on ${
-            operation.aggregateName
-        } ${operation.aggregateId}`,
-    );
-
 const assertAuthorized = ({ operation, user, libraryId }) => {
     return isAuthorized({ operation, user, libraryId })
         ? Promise.resolve()
-        : Promise.reject(unauthError({ operation, user, libraryId }));
+        : Promise.reject(new UnauthorizedError(operation, user.email));
 };
 
 const getAuthorizer = libraryId => ({

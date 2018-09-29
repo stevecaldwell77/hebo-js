@@ -2,6 +2,7 @@ const test = require('ava');
 const shortid = require('shortid');
 const sinon = require('sinon');
 const Hebo = require('../src');
+const { UnauthorizedError } = require('../src/errors');
 const EventRepository = require('./helpers/event-repository-inmemory');
 const SnapshotRepository = require('./helpers/snapshot-repository-inmemory');
 const NotificationHandler = require('./helpers/notification-handler-inmemory');
@@ -513,7 +514,7 @@ test('authorization', async t => {
 
     await t.throws(
         run(libraryId2, users.johnDoe),
-        Error,
+        UnauthorizedError,
         'error thrown when library-specific user runs getProjection() on a ' +
             'different library',
     );

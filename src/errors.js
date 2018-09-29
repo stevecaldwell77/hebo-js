@@ -30,6 +30,19 @@ module.exports.InvariantViolatedError = class InvariantViolatedError extends Err
     }
 };
 
+module.exports.UnauthorizedError = class UnauthorizedError extends Error {
+    constructor(operation, userDesc) {
+        const message = `user ${userDesc} is not allowed to call ${
+            operation.type
+        } on ${operation.aggregateName} ${operation.aggregateId}`;
+        super(message);
+        this.name = this.constructor.name;
+        Error.captureStackTrace(this, this.constructor);
+        this.operation = operation;
+        this.userDesc = userDesc;
+    }
+};
+
 // eslint-disable-next-line max-len
 module.exports.UnknownAggregateError = class UnknownAggregateError extends Error {
     constructor(aggregateName) {
