@@ -77,10 +77,10 @@ const handleValidEvent = ({ prevProjection, event, newState }) => {
 };
 
 // Handles an event that threw an error when applied.
-const handleBadEvent = ({ prevProjection, event, error }) => {
+const handleBadEvent = ({ prevProjection, event, err }) => {
     const condensedError = {
-        name: error.name,
-        message: error.message,
+        name: err.name,
+        message: err.message,
     };
     return {
         ...prevProjection,
@@ -115,11 +115,11 @@ const eventReducer = ({ applyEvent, validateState }) => (
             event,
             newState,
         });
-    } catch (error) {
+    } catch (err) {
         result = handleBadEvent({
             prevProjection,
             event,
-            error,
+            err,
         });
     }
     return result;
