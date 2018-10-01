@@ -20,21 +20,24 @@
         "verbose": true
     },
     "devDependencies": {
+        "@commitlint/cli": "latest",
+        "@commitlint/config-conventional": "latest",
         "auto-bind": "^1.1.0",
-        "ava": "^0.25.0",
+        "ava": "latest",
         "casual": "^1.5.19",
-        "codecov": "^2.3.0",
-        "cross-env": "^5.0.5",
-        "eslint": "^4.5.0",
+        "codecov": "latest",
+        "cross-env": "latest",
+        "eslint": "latest",
         "eslint-config-prettier": "latest",
+        "eslint-config-xo-lass": "latest",
         "eslint-plugin-prettier": "latest",
-        "git-branch-is": "^2.0.0",
-        "husky": "^0.14.3",
-        "lint-staged": "^4.0.4",
-        "nyc": "^11.1.0",
-        "prettier": "^1.6.1",
-        "remark-cli": "^4.0.0",
-        "remark-preset-github": "^0.0.6",
+        "fixpack": "latest",
+        "husky": "latest",
+        "lint-staged": "latest",
+        "nyc": "latest",
+        "prettier": "latest",
+        "remark-cli": "latest",
+        "remark-preset-github": "latest",
         "shortid": "^2.2.13",
         "sinon": "^6.3.4",
         "xo": "latest"
@@ -49,14 +52,26 @@
         "es"
     ],
     "license": "MIT",
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged && npm test",
+            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+        }
+    },
     "lint-staged": {
-        "*.{js,jsx,mjs,ts,tsx,css,less,scss,json,graphql}": [
-            "prettier --write",
-            "git add"
-        ],
-        "*.md": [
-            "remark . -qfo",
-            "git add"
+        "linters": {
+            "*.js": [
+                "prettier --write",
+                "xo --fix",
+                "git add"
+            ],
+            "*.md": ["remark . -qfo", "git add"],
+            "package.json": [ "fixpack", "git add" ]
+        }
+    },
+    "commitlint": {
+        "extends": [
+            "@commitlint/config-conventional"
         ]
     },
     "main": "src/index.js",
@@ -65,16 +80,10 @@
         "lines": 100,
         "functions": 100,
         "branches": 100,
-        "reporter": [
-            "lcov",
-            "html",
-            "text"
-        ]
+        "reporter": ["lcov", "html", "text"]
     },
     "remarkConfig": {
-        "plugins": [
-            "preset-github"
-        ]
+        "plugins": ["preset-github"]
     },
     "repository": {
         "type": "git",
@@ -84,38 +93,22 @@
         "singleQuote": true,
         "bracketSpacing": true,
         "trailingComma": "all",
-        "useTabs": false,
         "tabWidth": 4
     },
     "xo": {
-        "extends": "prettier",
-        "plugins": [
-            "prettier"
-        ],
+        "prettier": true,
+        "space": 4,
+        "extends": [ "xo-lass" ],
         "parserOptions": {
             "sourceType": "module"
-        },
-        "rules": {
-            "prettier/prettier": "error",
-            "max-len": [
-                "error",
-                {
-                    "code": 80,
-                    "ignoreUrls": true
-                }
-            ],
-            "capitalized-comments": "off",
-            "camelcase": "off",
-            "no-warning-comments": "off"
-        },
-        "space": 4
+        }
     },
     "scripts": {
         "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
         "lint": "xo && remark . -qfo",
-        "precommit": "if git-branch-is master >/dev/null 2>&1; then lint-staged && npm test; else echo \"Not on master, skipping precommit\"; fi",
-        "test": "npm run lint && npm run test-coverage",
-        "test:watch": "ava --watch",
-        "test-coverage": "cross-env NODE_ENV=test nyc ava"
+        "test": "npm run lint && npm run ava",
+        "test-coverage": "npm run lint && npm run nyc",
+        "ava": "cross-env NODE_ENV=test ava",
+        "nyc": "cross-env NODE_ENV=test nyc ava"
     }
 }
