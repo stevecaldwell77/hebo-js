@@ -1,114 +1,137 @@
 {
-    "name": "hebo",
-    "description": "Simple Event Sourcing Container",
-    "version": "1.0.0",
-    "author": "Steve Caldwell <scaldwell@gmail.com>",
-    "bugs": {
-        "url": "https://github.com/stevecaldwell77/hebo-js/issues",
-        "email": "scaldwell@gmail.com"
-    },
-    "contributors": [
-        "Steve Caldwell <scaldwell@gmail.com>"
-    ],
-    "dependencies": {
-        "immer": "^1.7.2",
-        "joi": "^13.6.0",
-        "lodash": "^4.17.11"
-    },
-    "ava": {
-        "failFast": true,
-        "verbose": true
-    },
-    "devDependencies": {
-        "@commitlint/cli": "latest",
-        "@commitlint/config-conventional": "latest",
-        "auto-bind": "^1.1.0",
-        "ava": "latest",
-        "casual": "^1.5.19",
-        "codecov": "latest",
-        "cross-env": "latest",
-        "eslint": "latest",
-        "eslint-config-prettier": "latest",
-        "eslint-config-xo-lass": "latest",
-        "eslint-plugin-prettier": "latest",
-        "fixpack": "latest",
-        "husky": "latest",
-        "lint-staged": "latest",
-        "nyc": "latest",
-        "prettier": "latest",
-        "remark-cli": "latest",
-        "remark-preset-github": "latest",
-        "shortid": "^2.2.13",
-        "sinon": "^6.3.4",
-        "xo": "latest"
-    },
-    "engines": {
-        "node": ">=8.3"
-    },
-    "homepage": "https://github.com/stevecaldwell77/hebo-js",
-    "keywords": [
-        "cqrs",
-        "event-sourcing",
-        "es"
-    ],
-    "license": "MIT",
-    "husky": {
-        "hooks": {
-            "pre-commit": "lint-staged && npm test",
-            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-        }
-    },
-    "lint-staged": {
-        "linters": {
-            "*.js": [
-                "prettier --write",
-                "xo --fix",
-                "git add"
-            ],
-            "*.md": ["remark . -qfo", "git add"],
-            "package.json": [ "fixpack", "git add" ]
-        }
-    },
-    "commitlint": {
-        "extends": [
-            "@commitlint/config-conventional"
-        ]
-    },
-    "main": "src/index.js",
-    "nyc": {
-        "check-coverage": true,
-        "lines": 100,
-        "functions": 100,
-        "branches": 100,
-        "reporter": ["lcov", "html", "text"]
-    },
-    "remarkConfig": {
-        "plugins": ["preset-github"]
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/stevecaldwell77/hebo-js"
-    },
-    "prettier": {
-        "singleQuote": true,
-        "bracketSpacing": true,
-        "trailingComma": "all",
-        "tabWidth": 4
-    },
-    "xo": {
-        "prettier": true,
-        "space": 4,
-        "extends": [ "xo-lass" ],
-        "parserOptions": {
-            "sourceType": "module"
-        }
-    },
-    "scripts": {
-        "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
-        "lint": "xo && remark . -qfo",
-        "test": "npm run lint && npm run ava",
-        "test-coverage": "npm run lint && npm run nyc",
-        "ava": "cross-env NODE_ENV=test ava",
-        "nyc": "cross-env NODE_ENV=test nyc ava"
+  "name": "hebo",
+  "description": "Simple Event Sourcing Container",
+  "version": "1.0.0",
+  "author": "Steve Caldwell <scaldwell@gmail.com>",
+  "ava": {
+    "failFast": true,
+    "verbose": true
+  },
+  "bugs": {
+    "url": "https://github.com/stevecaldwell77/hebo-js/issues",
+    "email": "scaldwell@gmail.com"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "contributors": [
+    "Steve Caldwell <scaldwell@gmail.com>"
+  ],
+  "dependencies": {
+    "immer": "^1.7.2",
+    "joi": "^13.6.0",
+    "lodash": "^4.17.11",
+    "shortid": "^2.2.13"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "latest",
+    "@commitlint/config-conventional": "latest",
+    "auto-bind": "^1.1.0",
+    "ava": "latest",
+    "casual": "^1.5.19",
+    "codecov": "latest",
+    "cross-env": "latest",
+    "eslint": "latest",
+    "eslint-config-prettier": "latest",
+    "eslint-config-xo-lass": "latest",
+    "eslint-plugin-prettier": "latest",
+    "fixpack": "latest",
+    "husky": "latest",
+    "lint-staged": "latest",
+    "nyc": "latest",
+    "prettier": "latest",
+    "remark-cli": "latest",
+    "remark-preset-github": "latest",
+    "sinon": "^6.3.4",
+    "xo": "latest"
+  },
+  "engines": {
+    "node": ">=8.3"
+  },
+  "homepage": "https://github.com/stevecaldwell77/hebo-js",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && npm test",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
+  },
+  "keywords": [
+    "cqrs",
+    "es",
+    "event-sourcing"
+  ],
+  "license": "MIT",
+  "lint-staged": {
+    "linters": {
+      "*.js": [
+        "prettier --write",
+        "xo --fix",
+        "git add"
+      ],
+      "*.md": [
+        "remark . -qfo",
+        "git add"
+      ],
+      "package.json": [
+        "fixpack",
+        "git add"
+      ]
+    }
+  },
+  "main": "src/index.js",
+  "nyc": {
+    "check-coverage": true,
+    "lines": 100,
+    "functions": 100,
+    "branches": 100,
+    "reporter": [
+      "lcov",
+      "html",
+      "text"
+    ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "bracketSpacing": true,
+    "trailingComma": "all",
+    "tabWidth": 4
+  },
+  "remarkConfig": {
+    "plugins": [
+      "preset-github"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stevecaldwell77/hebo-js"
+  },
+  "scripts": {
+    "ava": "cross-env NODE_ENV=test ava",
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
+    "lint": "xo && remark . -qfo",
+    "nyc": "cross-env NODE_ENV=test nyc ava",
+    "test": "npm run lint && npm run ava",
+    "test-coverage": "npm run lint && npm run nyc"
+  },
+  "xo": {
+    "prettier": true,
+    "space": 4,
+    "extends": [
+      "xo-lass"
+    ],
+    "parserOptions": {
+      "sourceType": "module"
+    },
+    "rules": {
+      "max-len": [
+        "error",
+        {
+          "code": 80,
+          "ignoreUrls": true
+        }
+      ]
+    }
+  }
 }
