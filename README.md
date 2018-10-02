@@ -7,7 +7,7 @@
 [![made with lass](https://img.shields.io/badge/made_with-lass-95CC28.svg)](https://lass.js.org)
 [![license](https://img.shields.io/github/license/stevecaldwell77/hebo-js.svg)](LICENSE)
 
-> Simple Event Sourcing Container
+> Simple CQRS / Event Sourcing Container
 
 
 ## Table of Contents

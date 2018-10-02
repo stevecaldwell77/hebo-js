@@ -1,6 +1,6 @@
 {
   "name": "hebo",
-  "description": "Simple Event Sourcing Container",
+  "description": "Simple CQRS / Event Sourcing Container",
   "version": "1.0.0",
   "author": "Steve Caldwell <scaldwell@gmail.com>",
   "ava": {
