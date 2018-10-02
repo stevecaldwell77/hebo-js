@@ -17,7 +17,9 @@ const hebo = new Hebo({
 
 const setupTest = async (user = users.superSally) => {
     const libraryId = shortid.generate();
-    const eventRepository = new EventRepository({ library: {} });
+    const eventRepository = new EventRepository({
+        aggregates: { library: {} },
+    });
     const snapshotRepository = new SnapshotRepository({ library: {} });
     const authorizer = getAuthorizer(libraryId);
 

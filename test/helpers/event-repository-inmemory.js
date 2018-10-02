@@ -22,7 +22,7 @@ const assertEventCanBeAppended = (prevEvents, event) => {
 };
 
 module.exports = class EventRepositoryInmemory {
-    constructor(aggregates = {}) {
+    constructor({ aggregates = {} } = {}) {
         this.aggregates = cloneDeep(aggregates);
         autoBind(this);
     }
