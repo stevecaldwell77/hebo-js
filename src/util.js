@@ -1,6 +1,7 @@
 const { produce } = require('immer');
 const isNil = require('lodash/isNil');
 const has = require('lodash/has');
+const Joi = require('joi');
 const { EventPayloadError, InvariantViolatedError } = require('./errors');
 
 module.exports.createReducer = handlers =>
@@ -33,3 +34,6 @@ module.exports.assertInvariant = (aggregateName, aggregateId, state) => (
         );
     }
 };
+
+module.exports.makeValidator = (schema, message) => value =>
+    Joi.assert(value, schema, message);

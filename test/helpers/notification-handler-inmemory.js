@@ -33,4 +33,8 @@ module.exports = class NotificationHandlerInmemory {
     invalidEventsFound(notification) {
         this.storeNotification('invalidEventsFound', notification);
     }
+
+    eventWritten(notification) {
+        this.storeNotification('eventWritten', notification);
+    }
 };

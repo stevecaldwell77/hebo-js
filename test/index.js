@@ -1,7 +1,10 @@
 const test = require('ava');
 const { isFunction, omit } = require('lodash');
 const Hebo = require('../src');
-const { UnknownAggregateError } = require('../src/errors');
+const {
+    InvalidAggregateError,
+    UnknownAggregateError,
+} = require('../src/errors');
 const EventRepository = require('./helpers/event-repository-inmemory');
 const SnapshotRepository = require('./helpers/snapshot-repository-inmemory');
 const NotificationHandler = require('./helpers/notification-handler-inmemory');
@@ -28,59 +31,8 @@ test('constructor()', t => {
 
     t.throws(
         () => new Hebo({ ...validParams, aggregates: { library: {} } }),
-        /"projection" is required/,
-        'aggregates must have a projection',
-    );
-
-    t.throws(
-        () =>
-            new Hebo({
-                ...validParams,
-                aggregates: {
-                    library: {
-                        projection: omit(
-                            libraryAggregate.projection,
-                            'initialState',
-                        ),
-                    },
-                },
-            }),
-        /"initialState" is required/,
-        'projection must have initialState()',
-    );
-
-    t.throws(
-        () =>
-            new Hebo({
-                ...validParams,
-                aggregates: {
-                    library: {
-                        projection: omit(
-                            libraryAggregate.projection,
-                            'applyEvent',
-                        ),
-                    },
-                },
-            }),
-        /"applyEvent" is required/,
-        'projection must have applyEvent()',
-    );
-
-    t.throws(
-        () =>
-            new Hebo({
-                ...validParams,
-                aggregates: {
-                    library: {
-                        projection: omit(
-                            libraryAggregate.projection,
-                            'validateState',
-                        ),
-                    },
-                },
-            }),
-        /"validateState" is required/,
-        'projection must have validateState()',
+        InvalidAggregateError,
+        'aggregates validation is run',
     );
 });
 

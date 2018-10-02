@@ -1,5 +1,14 @@
 const Joi = require('joi');
-const { InvalidEventError } = require('./errors');
+const forIn = require('lodash/forIn');
+const {
+    InvalidAggregateError,
+    InvalidCommandError,
+    InvalidEventError,
+    InvalidProjectionError,
+} = require('./errors');
+
+const errorDetailsMessage = error =>
+    error.details.map(d => d.message).join(', ');
 
 const eventSchema = Joi.object()
     .keys({
@@ -26,6 +35,58 @@ module.exports.validateEvent = event => {
     }
 };
 
+const aggregateSchema = Joi.object().keys({
+    projection: Joi.object().required(),
+    commands: Joi.object().required(),
+});
+
+const projectionSchema = Joi.object().keys({
+    initialState: Joi.func().required(),
+    applyEvent: Joi.func().required(),
+    validateState: Joi.func().required(),
+});
+
+const commandSchema = Joi.object().keys({
+    validateParams: Joi.func().required(),
+    createEvent: Joi.func().required(),
+    isCreateCommand: Joi.boolean(),
+    retries: Joi.number()
+        .integer()
+        .positive(),
+});
+
+module.exports.validateAggregate = (aggregate, aggregateName) => {
+    const { error: aggregateError } = Joi.validate(aggregate, aggregateSchema);
+    if (aggregateError) {
+        throw new InvalidAggregateError(
+            errorDetailsMessage(aggregateError),
+            aggregateName,
+        );
+    }
+
+    const { error: projectionError } = Joi.validate(
+        aggregate.projection,
+        projectionSchema,
+    );
+    if (projectionError) {
+        throw new InvalidProjectionError(
+            errorDetailsMessage(projectionError),
+            aggregateName,
+        );
+    }
+
+    forIn(aggregate.commands, (command, commandName) => {
+        const { error: commandError } = Joi.validate(command, commandSchema);
+        if (commandError) {
+            throw new InvalidCommandError(
+                errorDetailsMessage(commandError),
+                aggregateName,
+                commandName,
+            );
+        }
+    });
+};
+
 module.exports.eventRepositorySchema = Joi.object()
     .keys({
         getEvents: Joi.func().required(),
@@ -43,24 +104,12 @@ module.exports.snapshotRepositorySchema = Joi.object()
 module.exports.notificationHandlerSchema = Joi.object()
     .keys({
         invalidEventsFound: Joi.func().required(),
+        eventWritten: Joi.func().required(),
     })
     .unknown();
 
 module.exports.authorizerSchema = Joi.object()
     .keys({
         assert: Joi.func().required(),
-    })
-    .unknown();
-
-module.exports.aggregateSchema = Joi.object()
-    .keys({
-        projection: Joi.object()
-            .keys({
-                initialState: Joi.func().required(),
-                applyEvent: Joi.func().required(),
-                validateState: Joi.func().required(),
-            })
-            .unknown()
-            .required(),
     })
     .unknown();

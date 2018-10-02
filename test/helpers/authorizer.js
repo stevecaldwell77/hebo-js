@@ -21,7 +21,8 @@ const users = {
         email: 'msmith@gmail.com',
     },
 
-    // Will get read/write privileges on the libraryId passed to getAuthorizer.
+    // Cannot create a library, but can do any other operation on the libraryId
+    // passed to getAuthorizer.
     johnDoe: {
         userId: shortid.generate(),
         email: 'johndoe@gmail.com',
@@ -39,11 +40,17 @@ const isAuthorized = ({ operation, user, libraryId }) => {
                 readOnlyOperations.has(operation.type) &&
                 operation.aggregateName === 'library'
             );
-        case users.johnDoe.userId:
+        case users.johnDoe.userId: {
+            const isCreateCommand =
+                operation.type === 'runCommand' &&
+                operation.aggregateName === 'library' &&
+                operation.commandName === 'create';
+            if (isCreateCommand) return false;
             return (
                 operation.aggregateName === 'library' &&
                 operation.aggregateId === libraryId
             );
+        }
         default:
             return false;
     }

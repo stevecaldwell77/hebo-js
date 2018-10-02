@@ -1,23 +1,26 @@
 const EventEmitter = require('events');
+const forIn = require('lodash/forIn');
 const has = require('lodash/has');
 const mapValues = require('lodash/mapValues');
 const curry = require('lodash/fp/curry');
 const Joi = require('joi');
 const getProjection = require('./get-projection');
 const updateSnapshot = require('./update-snapshot');
-const { UnknownAggregateError } = require('./errors');
+const runCommand = require('./run-command');
+const { UnknownAggregateError, UnknownCommandError } = require('./errors');
 const {
     eventRepositorySchema,
     snapshotRepositorySchema,
     notificationHandlerSchema,
     authorizerSchema,
-    aggregateSchema,
+    validateAggregate,
 } = require('./validators');
 
 // Creates an EventEmitter object and wires up listeners
 const createNotifier = notificationHandler => {
     const notifier = new EventEmitter();
     notifier.on('invalidEventsFound', notificationHandler.invalidEventsFound);
+    notifier.on('eventWritten', notificationHandler.eventWritten);
     return notifier;
 };
 
@@ -28,11 +31,12 @@ const connectAggregate = ({
     authorizer,
     user,
     notifier,
+    defaultCommandRetries,
     aggregate,
     aggregateName,
 }) => ({
-    getProjection(aggregateId) {
-        return getProjection({
+    async getProjection(aggregateId, opts = {}) {
+        const projection = await getProjection({
             aggregateName,
             aggregateId,
             initialState: aggregate.projection.initialState,
@@ -43,14 +47,46 @@ const connectAggregate = ({
             notifier,
             assertAuthorized: authorizer.assert,
             user,
+            missValue: opts.missValue,
         });
+        return projection;
     },
-    updateSnapshot(aggregateId) {
-        return updateSnapshot({
+    async updateSnapshot(aggregateId) {
+        await updateSnapshot({
             aggregateName,
             aggregateId,
             getProjection: this.getProjection.bind(this),
             writeSnapshot: snapshotRepository.writeSnapshot,
+            assertAuthorized: authorizer.assert,
+            user,
+        });
+    },
+    async runCommand(commandName, aggregateId, ...commandParams) {
+        const command = aggregate.commands[commandName];
+        if (!command) {
+            throw new UnknownCommandError(aggregateName, commandName);
+        }
+        const {
+            createEvent,
+            isCreateCommand = false,
+            retries = defaultCommandRetries,
+            validateParams,
+        } = command;
+        await runCommand({
+            aggregateName,
+            aggregateId,
+            commandName,
+            commandParams,
+            isCreateCommand,
+            validateParams,
+            getProjection: this.getProjection.bind(this),
+            initialState: aggregate.projection.initialState,
+            createEvent,
+            applyEvent: aggregate.projection.applyEvent,
+            validateState: aggregate.projection.validateState,
+            writeEvent: eventRepository.writeEvent,
+            retries,
+            notifier,
             assertAuthorized: authorizer.assert,
             user,
         });
@@ -65,6 +101,7 @@ const connectAggregates = ({
     user,
     notifier,
     aggregates,
+    defaultCommandRetries,
 }) =>
     mapValues(aggregates, (aggregate, aggregateName) =>
         connectAggregate({
@@ -73,6 +110,7 @@ const connectAggregates = ({
             authorizer,
             user,
             notifier,
+            defaultCommandRetries,
             aggregate,
             aggregateName,
         }),
@@ -87,9 +125,11 @@ const getAggregate = curry((aggregates, aggregateName) => {
 });
 
 const heboSchema = Joi.object().keys({
-    aggregates: Joi.object()
-        .pattern(Joi.string(), aggregateSchema)
-        .required(),
+    aggregates: Joi.object().required(),
+    defaultCommandRetries: Joi.number()
+        .integer()
+        .positive()
+        .default(10),
 });
 
 const connectSchema = Joi.object().keys({
@@ -107,7 +147,9 @@ module.exports = class Hebo {
             heboSchema,
             'Invalid parameters in Hebo constructor',
         );
+        forIn(params.aggregates, validateAggregate);
         this.aggregates = params.aggregates;
+        this.defaultCommandRetries = params.defaultCommandRetries;
     }
 
     // NOTE: see connectSchema for allowed params
@@ -118,6 +160,7 @@ module.exports = class Hebo {
         const connectedAggregates = connectAggregates({
             ...params,
             aggregates: this.aggregates,
+            defaultCommandRetries: this.defaultCommandRetries,
             notifier,
         });
         return getAggregate(connectedAggregates);

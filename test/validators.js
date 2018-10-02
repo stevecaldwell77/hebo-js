@@ -1,7 +1,8 @@
 const test = require('ava');
 const shortid = require('shortid');
 const { omit } = require('lodash');
-const { validateEvent } = require('../src/validators');
+const { validateEvent, validateAggregate } = require('../src/validators');
+const libraryAggregate = require('./helpers/aggregates/library');
 
 test('validateEvent()', t => {
     const validEvent = {
@@ -78,5 +79,75 @@ test('validateEvent()', t => {
         () => validateEvent({ ...validEvent, version: 0 }),
         /"version" must be greater than 0/,
         'version must be positive',
+    );
+});
+
+test('validateAggregate()', t => {
+    t.notThrows(
+        () => validateAggregate(libraryAggregate, 'library'),
+        'valid aggregate passes',
+    );
+
+    t.throws(
+        () =>
+            validateAggregate(omit(libraryAggregate, 'projection'), 'library'),
+        /"projection" is required/,
+        'projection required',
+    );
+
+    t.throws(
+        () =>
+            validateAggregate(
+                omit(libraryAggregate, 'projection.initialState'),
+                'library',
+            ),
+        /"initialState" is required/,
+        'projection > initialState required',
+    );
+
+    t.throws(
+        () =>
+            validateAggregate(
+                omit(libraryAggregate, 'projection.applyEvent'),
+                'library',
+            ),
+        /"applyEvent" is required/,
+        'projection > applyEvent required',
+    );
+
+    t.throws(
+        () =>
+            validateAggregate(
+                omit(libraryAggregate, 'projection.validateState'),
+                'library',
+            ),
+        /"validateState" is required/,
+        'projection > validateState required',
+    );
+
+    t.throws(
+        () => validateAggregate(omit(libraryAggregate, 'commands'), 'library'),
+        /"commands" is required/,
+        'commands required',
+    );
+
+    t.throws(
+        () =>
+            validateAggregate(
+                omit(libraryAggregate, 'commands.setName.validateParams'),
+                'library',
+            ),
+        /"validateParams" is required/,
+        'command > validateParams required',
+    );
+
+    t.throws(
+        () =>
+            validateAggregate(
+                omit(libraryAggregate, 'commands.setName.createEvent'),
+                'library',
+            ),
+        /"createEvent" is required/,
+        'command > createEvent required',
     );
 });

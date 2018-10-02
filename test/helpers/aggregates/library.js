@@ -1,10 +1,14 @@
+const Joi = require('joi');
+const { noop } = require('lodash');
 const {
     createReducer,
     getRequiredPayloadValue,
     assertInvariant,
+    makeValidator,
 } = require('../../../src/util');
 const { UnknownEventTypeError } = require('../../../src/errors');
 
+const CREATED = 'CREATED';
 const NAME_SET = 'NAME_SET';
 const CITY_NAME_SET = 'CITY_NAME_SET';
 const ACTIVATED = 'ACTIVATED';
@@ -20,13 +24,48 @@ const initialState = libraryId => ({
     books: [],
 });
 
+const validateLibraryId = makeValidator(
+    Joi.string()
+        .min(5)
+        .required(),
+    'libraryId',
+);
+
+const validateLibraryName = makeValidator(
+    Joi.string()
+        .min(4)
+        .required(),
+    'libraryName',
+);
+
+const validateCityName = makeValidator(
+    Joi.string()
+        .min(4)
+        .required(),
+    'cityName',
+);
+
+const validateBookId = makeValidator(
+    Joi.string()
+        .min(5)
+        .required(),
+    'bookId',
+);
+
 const applyEvent = createReducer({
+    [CREATED]: (draft, event) => {
+        const libraryId = getRequiredPayloadValue(event, 'libraryId');
+        validateLibraryId(libraryId);
+        draft = initialState(libraryId);
+    },
     [NAME_SET]: (draft, event) => {
         const name = getRequiredPayloadValue(event, 'name');
+        validateLibraryName(name);
         draft.libraryName = name;
     },
     [CITY_NAME_SET]: (draft, event) => {
         const name = getRequiredPayloadValue(event, 'name');
+        validateCityName(name);
         draft.cityName = name;
     },
     [ACTIVATED]: draft => {
@@ -37,10 +76,12 @@ const applyEvent = createReducer({
     },
     [BOOK_ADDED]: (draft, event) => {
         const bookId = getRequiredPayloadValue(event, 'bookId');
+        validateBookId(bookId);
         draft.books.push(bookId);
     },
     [BOOK_REMOVED]: (draft, event) => {
         const bookId = getRequiredPayloadValue(event, 'bookId');
+        validateBookId(bookId);
         draft.books = draft.books.filter(book => book.bookId !== bookId);
     },
     default: (draft, event) => {
@@ -61,10 +102,78 @@ const validateState = state => {
     }
 };
 
+const commands = {
+    // create(libraryId)
+    create: {
+        isCreateCommand: true,
+        validateParams: validateLibraryId,
+        createEvent: libraryId => ({
+            type: CREATED,
+            payload: { libraryId },
+        }),
+    },
+
+    // setName(name)
+    setName: {
+        validateParams: validateLibraryName,
+        createEvent: name => ({
+            type: NAME_SET,
+            payload: { name },
+        }),
+        retries: 3,
+    },
+
+    // setCityName(name)
+    setCityName: {
+        validateParams: validateCityName,
+        createEvent: name => ({
+            type: CITY_NAME_SET,
+            payload: { name },
+        }),
+    },
+
+    // activate()
+    activate: {
+        validateParams: noop,
+        createEvent: () => ({
+            type: ACTIVATED,
+            payload: {},
+        }),
+    },
+
+    // deactivate()
+    deactivate: {
+        validateParams: noop,
+        createEvent: () => ({
+            type: DEACTIVATED,
+            payload: {},
+        }),
+    },
+
+    // addBook(bookId)
+    addBook: {
+        validateParams: validateBookId,
+        createEvent: bookId => ({
+            type: BOOK_ADDED,
+            payload: { bookId },
+        }),
+    },
+
+    // removeBook(bookId)
+    removeBook: {
+        validateParams: validateBookId,
+        createEvent: bookId => ({
+            type: BOOK_REMOVED,
+            payload: { bookId },
+        }),
+    },
+};
+
 module.exports = {
     projection: {
         initialState,
         applyEvent,
         validateState,
     },
+    commands,
 };
