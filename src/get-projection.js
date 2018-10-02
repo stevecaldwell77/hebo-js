@@ -186,6 +186,10 @@ Parameters:
     Signature: (user, operation) -> Promise(void)
     operation will be: { type: 'getProjection', aggregateName, aggregateId }
 
+  missValue: Controls return value generated for missing aggregate. One of:
+   * 'none' (default) - return undefined
+   * 'newProjection' - return an initialized projection
+
 Return value: Promise containing projection.
 
  */
@@ -200,6 +204,7 @@ const getProjection = async ({
     notifier,
     assertAuthorized,
     user,
+    missValue = 'none',
 }) => {
     // authorize user
     await assertAuthorized(user, {
@@ -224,7 +229,10 @@ const getProjection = async ({
     );
 
     // If we're at version 0 with no events, this is a miss.
-    if (prevProjection.version === 0 && events.length === 0) return undefined;
+    const miss = prevProjection.version === 0 && events.length === 0;
+    if (miss) {
+        return missValue === 'newProjection' ? prevProjection : undefined;
+    }
 
     // Apply all the events and return the result
     const projection = applyEvents({

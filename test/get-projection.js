@@ -15,7 +15,8 @@ const hebo = new Hebo({
     },
 });
 
-const getEmptyEventRepository = () => new EventRepository({ library: {} });
+const getEmptyEventRepository = () =>
+    new EventRepository({ aggregates: { library: {} } });
 
 const getEmptySnapshotRepository = () =>
     new SnapshotRepository({ library: {} });
@@ -51,6 +52,7 @@ const runGetProjection = async ({
     snapshotRepository,
     authorizer,
     user = users.superSally,
+    opts,
 }) => {
     const notificationHandler = new NotificationHandler();
     const getAggregate = hebo.connect({
@@ -63,7 +65,7 @@ const runGetProjection = async ({
     const getSnapshotSpy = sinon.spy(snapshotRepository, 'getSnapshot');
     const getEventsSpy = sinon.spy(eventRepository, 'getEvents');
     const aggregate = getAggregate(aggregateName);
-    const projection = await aggregate.getProjection(aggregateId);
+    const projection = await aggregate.getProjection(aggregateId, opts);
     const updateSnapshot = () => aggregate.updateSnapshot(aggregateId);
     const getSnapshotCalls = getSnapshotSpy.getCalls().map(c => c.args);
     const getEventsCalls = getEventsSpy.getCalls().map(c => c.args);
@@ -147,6 +149,37 @@ test('aggregate does not exist', async t => {
     });
     t.is(projection, undefined, 'returns undefined for unknown aggregate id');
     t.deepEqual(notifications, [], 'no notifications');
+});
+
+// Calling getProjection() for an aggregate that has no events, but we want a
+// new projection to be returned.
+test('aggregate does not exist, missValue = "newProjection"', async t => {
+    const libraryId = shortid.generate();
+    const authorizer = getAuthorizer(libraryId);
+    const { projection } = await runGetProjection({
+        aggregateName: 'library',
+        aggregateId: libraryId,
+        eventRepository: getEmptyEventRepository(),
+        snapshotRepository: getEmptySnapshotRepository(),
+        authorizer,
+        opts: { missValue: 'newProjection' },
+    });
+    t.deepEqual(
+        projection,
+        {
+            state: {
+                libraryId,
+                libraryName: null,
+                cityName: null,
+                active: false,
+                books: [],
+            },
+            version: 0,
+            invalidEvents: [],
+            ignoredEvents: [],
+        },
+        'returns initialized projection',
+    );
 });
 
 // Calling getProjection() for an aggregate that has no snapshot, but has events
