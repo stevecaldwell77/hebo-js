@@ -36,7 +36,33 @@ yarn add hebo
 ## Usage
 
 ```js
-// TBD
+// Meant to be done at require time
+const Hebo = require('hebo');
+const libraryAggregate = require('./path/to/my/libraryAggregate');
+const bookAggregate = require('./path/to/my/bookAggregate');
+
+const hebo = new Hebo({
+    aggregates: {
+      library: libraryAggregate,
+      book: bookAggregate,
+    }
+})
+
+// ... and then do this at runtime:
+const getAggregate = hebo.connect({
+    eventRepository,
+    snapshotRepository,
+    notificationHandler,
+    authorizer,
+    user,
+});
+
+await getAggregate('library').runCommand('create', 1234);
+await getAggregate('library').runCommand('setName', 1234, 'North Branch');
+
+const library = getAggregate('library').getProjection(1234);
+
+await getAggregate('library').updateSnapshot(1234);
 ```
 
 
