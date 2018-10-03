@@ -38,6 +38,7 @@
     "eslint-config-xo-lass": "latest",
     "eslint-plugin-prettier": "latest",
     "fixpack": "latest",
+    "hebo-event-repository-inmemory": "^1.0.1",
     "husky": "latest",
     "lint-staged": "latest",
     "nyc": "latest",

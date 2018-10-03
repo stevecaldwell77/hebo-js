@@ -639,7 +639,7 @@ author-regex@^1.0.0:
   resolved "https://registry.yarnpkg.com/author-regex/-/author-regex-1.0.0.tgz#d08885be6b9bbf9439fe087c76287245f0a81450"
   integrity sha1-0IiFvmubv5Q5/gh8dihyRfCoFFA=
 
-auto-bind@^1.1.0:
+auto-bind@^1.1.0, auto-bind@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/auto-bind/-/auto-bind-1.2.1.tgz#807f7910b0210db9eefe133f3492c28e89698b96"
   integrity sha512-/W9yj1yKmBLwpexwAujeD9YHwYmRuWFGV8HWE7smQab797VeHa4/cnE2NFeDhA+E+5e/OGBI8763EhLjfZ/MXA==
@@ -3048,6 +3048,25 @@ has@^1.0.1:
   integrity sha512-f2dvO0VU6Oej7RkWJGrehjbzMAjFp5/VKPp5tTpWIV4JHHZK1/BxbFRtf/siA2SWTe09caDmVtYYzWEIbBS4zw==
   dependencies:
     function-bind "^1.1.1"
+
+hebo-event-repository-inmemory@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/hebo-event-repository-inmemory/-/hebo-event-repository-inmemory-1.0.1.tgz#116d4a9c980bc877e50569a4535809339dc33f06"
+  integrity sha512-MrIAVDciSJRvoFog4a/54wDiHhUT6e8JeStkMyPJOUkCN+D7MDbeBxQR/HhXziyhfEqA0alFfg+8q0Dx+i6daQ==
+  dependencies:
+    auto-bind "^1.2.1"
+    hebo "^0.2.1"
+    lodash "^4.17.11"
+
+hebo@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/hebo/-/hebo-0.2.1.tgz#f9d085f72f0ecb0668354e06a1d90637771b534f"
+  integrity sha512-csEdvaxRU/msHDzNT7oZeiY8fXzdK/Hf69TP3g+mFBJv73k2zFJtMhlhUUYq9ZCf653ZvKyUUjaepzIEF9T7Aw==
+  dependencies:
+    immer "^1.7.2"
+    joi "^13.6.0"
+    lodash "^4.17.11"
+    shortid "^2.2.13"
 
 hoek@5.x.x:
   version "5.0.4"

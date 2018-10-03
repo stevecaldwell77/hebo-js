@@ -1,8 +1,8 @@
 const test = require('ava');
 const { isFunction, omit } = require('lodash');
+const EventRepository = require('hebo-event-repository-inmemory');
 const Hebo = require('..');
 const { InvalidAggregateError, UnknownAggregateError } = require('../errors');
-const EventRepository = require('./helpers/event-repository-inmemory');
 const SnapshotRepository = require('./helpers/snapshot-repository-inmemory');
 const NotificationHandler = require('./helpers/notification-handler-inmemory');
 const libraryAggregate = require('./helpers/aggregates/library');

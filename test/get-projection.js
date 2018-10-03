@@ -1,9 +1,9 @@
 const test = require('ava');
 const shortid = require('shortid');
 const sinon = require('sinon');
+const EventRepository = require('hebo-event-repository-inmemory');
 const Hebo = require('..');
 const { UnauthorizedError } = require('../errors');
-const EventRepository = require('./helpers/event-repository-inmemory');
 const SnapshotRepository = require('./helpers/snapshot-repository-inmemory');
 const NotificationHandler = require('./helpers/notification-handler-inmemory');
 const libraryAggregate = require('./helpers/aggregates/library');
@@ -15,16 +15,16 @@ const hebo = new Hebo({
     },
 });
 
-const getEmptyEventRepository = () =>
-    new EventRepository({ aggregates: { library: {} } });
+const getEventRepository = () =>
+    new EventRepository({ aggregates: ['library'] });
 
 const getEmptySnapshotRepository = () =>
     new SnapshotRepository({ library: {} });
 
-const setupBasicLibrary = (name, city) => {
+const setupBasicLibrary = async (name, city) => {
     const libraryId = shortid.generate();
-    const eventRepository = getEmptyEventRepository();
-    eventRepository.writeEvent('library', libraryId, {
+    const eventRepository = getEventRepository();
+    await eventRepository.writeEvent('library', libraryId, {
         eventId: shortid.generate(),
         type: 'NAME_SET',
         payload: { name },
@@ -33,7 +33,7 @@ const setupBasicLibrary = (name, city) => {
         },
         version: 1,
     });
-    eventRepository.writeEvent('library', libraryId, {
+    await eventRepository.writeEvent('library', libraryId, {
         eventId: shortid.generate(),
         type: 'CITY_NAME_SET',
         payload: { name: city },
@@ -143,7 +143,7 @@ test('aggregate does not exist', async t => {
     const { projection, notifications } = await runGetProjection({
         aggregateName: 'library',
         aggregateId: libraryId,
-        eventRepository: getEmptyEventRepository(),
+        eventRepository: getEventRepository(),
         snapshotRepository: getEmptySnapshotRepository(),
         authorizer,
     });
@@ -159,7 +159,7 @@ test('aggregate does not exist, missValue = "newProjection"', async t => {
     const { projection } = await runGetProjection({
         aggregateName: 'library',
         aggregateId: libraryId,
-        eventRepository: getEmptyEventRepository(),
+        eventRepository: getEventRepository(),
         snapshotRepository: getEmptySnapshotRepository(),
         authorizer,
         opts: { missValue: 'newProjection' },
@@ -184,7 +184,7 @@ test('aggregate does not exist, missValue = "newProjection"', async t => {
 
 // Calling getProjection() for an aggregate that has no snapshot, but has events
 test('aggregate with no snapshot', async t => {
-    const { libraryId, eventRepository } = setupBasicLibrary(
+    const { libraryId, eventRepository } = await setupBasicLibrary(
         'North Branch',
         'Los Angeles',
     );
@@ -219,7 +219,7 @@ test('aggregate with no snapshot', async t => {
 
 // Test calling getProjection() with snapshots, both latest and outdated
 test('aggregate with snapshots', async t => {
-    const { libraryId, eventRepository } = setupBasicLibrary(
+    const { libraryId, eventRepository } = await setupBasicLibrary(
         'North Branch',
         'Los Angeles',
     );
@@ -264,7 +264,7 @@ test('aggregate with snapshots', async t => {
     });
 
     // Now add one more event, and make sure everything still works correctly.
-    eventRepository.writeEvent('library', libraryId, {
+    await eventRepository.writeEvent('library', libraryId, {
         eventId: shortid.generate(),
         type: 'CITY_NAME_SET',
         payload: { name: 'Playa Del Rey' },
@@ -302,7 +302,7 @@ test('aggregate with snapshots', async t => {
 
 // // Test calling getProjection() with a event store that has a bad event
 test('handing bad events', async t => {
-    const { libraryId, eventRepository } = setupBasicLibrary(
+    const { libraryId, eventRepository } = await setupBasicLibrary(
         'North Branch',
         'Los Angeles',
     );
@@ -323,7 +323,7 @@ test('handing bad events', async t => {
         },
         version: 3,
     };
-    eventRepository.writeEvent('library', libraryId, invalidEvent1);
+    await eventRepository.writeEvent('library', libraryId, invalidEvent1);
 
     // Invalid event: our library doesn't have any books yet.
     const invalidEvent2 = {
@@ -335,11 +335,11 @@ test('handing bad events', async t => {
         },
         version: 4,
     };
-    eventRepository.writeEvent('library', libraryId, invalidEvent2);
+    await eventRepository.writeEvent('library', libraryId, invalidEvent2);
 
     // Now add a valid event. This event should be successfully applied to the
     // projection.
-    eventRepository.writeEvent('library', libraryId, {
+    await eventRepository.writeEvent('library', libraryId, {
         eventId: shortid.generate(),
         type: 'NAME_SET',
         payload: { name: 'Rodgers Branch' },
@@ -361,7 +361,7 @@ test('handing bad events', async t => {
         },
         version: 6,
     };
-    eventRepository.forceWriteEvent('library', libraryId, invalidEvent3);
+    await eventRepository.forceWriteEvent('library', libraryId, invalidEvent3);
 
     // Expected:
     //  * The bad events are stored to invalidEvents
@@ -446,7 +446,7 @@ test('handing bad events', async t => {
         },
         version: 7,
     };
-    eventRepository.writeEvent('library', libraryId, resolvingEvent1);
+    await eventRepository.writeEvent('library', libraryId, resolvingEvent1);
 
     const resolvingEvent2 = {
         eventId: shortid.generate(),
@@ -458,7 +458,7 @@ test('handing bad events', async t => {
         },
         version: 8,
     };
-    eventRepository.writeEvent('library', libraryId, resolvingEvent2);
+    await eventRepository.writeEvent('library', libraryId, resolvingEvent2);
 
     // Expected:
     //  * The new events are applied
@@ -506,7 +506,7 @@ test('handing bad events', async t => {
 test('authorization', async t => {
     const libraryId1 = shortid.generate();
     const libraryId2 = shortid.generate();
-    const eventRepository = getEmptyEventRepository();
+    const eventRepository = getEventRepository();
     const snapshotRepository = getEmptySnapshotRepository();
     const authorizer = getAuthorizer(libraryId1);
 

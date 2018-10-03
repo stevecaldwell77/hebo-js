@@ -2,6 +2,7 @@ const test = require('ava');
 const shortid = require('shortid');
 const sinon = require('sinon');
 const Joi = require('joi');
+const EventRepository = require('hebo-event-repository-inmemory');
 const Hebo = require('..');
 const {
     AggregateNotFoundError,
@@ -15,7 +16,6 @@ const {
     UnknownCommandError,
 } = require('../errors');
 const { makeValidator } = require('../util');
-const EventRepository = require('./helpers/event-repository-inmemory');
 const SnapshotRepository = require('./helpers/snapshot-repository-inmemory');
 const NotificationHandler = require('./helpers/notification-handler-inmemory');
 const libraryAggregate = require('./helpers/aggregates/library');
@@ -70,12 +70,7 @@ const hebo = new Hebo({
 });
 
 const makeEventRepository = () =>
-    new EventRepository({
-        aggregates: {
-            library: {},
-            brokenCity: {},
-        },
-    });
+    new EventRepository({ aggregates: ['library', 'brokenCity'] });
 
 const makeSnapshotRepository = () =>
     new SnapshotRepository({
@@ -129,7 +124,7 @@ test('validateParams', async t => {
     );
 
     t.deepEqual(
-        eventRepository.getEvents('library', libraryId),
+        await eventRepository.getEvents('library', libraryId),
         [],
         'no events written when validateParams fails',
     );
@@ -206,6 +201,8 @@ test('applyEvent throws error', async t => {
 // command's event, the error should be propogated.
 test('validateState throws error', async t => {
     const { getAggregate, eventRepository, libraryId } = await setupTest();
+
+    console.log(eventRepository);
 
     await eventRepository.writeEvent('library', libraryId, {
         eventId: shortid.generate(),
@@ -311,7 +308,7 @@ test('successful command', async t => {
         'able to run setCityName',
     );
 
-    const events = eventRepository.getEvents('library', libraryId);
+    const events = await eventRepository.getEvents('library', libraryId);
 
     t.is(events.length, 3, 'event generated for each command');
 
@@ -408,7 +405,7 @@ test('successful command, with retry', async t => {
 
     t.is(writeEvent.callCount, 3, 'writeEvent was retried');
 
-    const events = eventRepository.getEvents('library', libraryId);
+    const events = await eventRepository.getEvents('library', libraryId);
 
     t.is(events.length, 1, 'event generated');
     t.deepEqual(
