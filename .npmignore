@@ -1,2 +1,15 @@
+# Copied from .gitignore
+.DS_Store
+*.log
+.idea
+node_modules
+coverage
+.nyc_output
+
+# Plus these
+.remarkignore
+.travis.yml
+.gitattributes
+.editorconfig
 test/
 yarn.lock
