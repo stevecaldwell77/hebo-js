@@ -2,7 +2,7 @@ const assert = require('assert');
 const curry = require('lodash/curry');
 const autoBind = require('auto-bind');
 const cloneDeep = require('lodash/cloneDeep');
-const { validateEvent } = require('../../src/validators');
+const { validateEvent } = require('../../validators');
 
 const versionFilter = curry(
     (greaterThan, event) => event.version > greaterThan,

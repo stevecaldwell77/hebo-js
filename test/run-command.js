@@ -2,7 +2,7 @@ const test = require('ava');
 const shortid = require('shortid');
 const sinon = require('sinon');
 const Joi = require('joi');
-const Hebo = require('../src');
+const Hebo = require('..');
 const {
     AggregateNotFoundError,
     DuplicateAggregateError,
@@ -13,8 +13,8 @@ const {
     MaxCommandAttemptsError,
     UnauthorizedError,
     UnknownCommandError,
-} = require('../src/errors');
-const { makeValidator } = require('../src/util');
+} = require('../errors');
+const { makeValidator } = require('../util');
 const EventRepository = require('./helpers/event-repository-inmemory');
 const SnapshotRepository = require('./helpers/snapshot-repository-inmemory');
 const NotificationHandler = require('./helpers/notification-handler-inmemory');

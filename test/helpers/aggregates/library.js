@@ -5,8 +5,8 @@ const {
     getRequiredPayloadValue,
     assertInvariant,
     makeValidator,
-} = require('../../../src/util');
-const { UnknownEventTypeError } = require('../../../src/errors');
+} = require('../../../util');
+const { UnknownEventTypeError } = require('../../../errors');
 
 const CREATED = 'CREATED';
 const NAME_SET = 'NAME_SET';

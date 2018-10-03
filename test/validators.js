@@ -1,7 +1,7 @@
 const test = require('ava');
 const shortid = require('shortid');
 const { omit } = require('lodash');
-const { validateEvent, validateAggregate } = require('../src/validators');
+const { validateEvent, validateAggregate } = require('../validators');
 const libraryAggregate = require('./helpers/aggregates/library');
 
 test('validateEvent()', t => {

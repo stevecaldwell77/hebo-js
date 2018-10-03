@@ -1,8 +1,8 @@
 const test = require('ava');
 const shortid = require('shortid');
 const sinon = require('sinon');
-const Hebo = require('../src');
-const { UnauthorizedError } = require('../src/errors');
+const Hebo = require('..');
+const { UnauthorizedError } = require('../errors');
 const EventRepository = require('./helpers/event-repository-inmemory');
 const SnapshotRepository = require('./helpers/snapshot-repository-inmemory');
 const NotificationHandler = require('./helpers/notification-handler-inmemory');

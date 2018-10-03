@@ -1,5 +1,5 @@
 const shortid = require('shortid');
-const { UnauthorizedError } = require('../../src/errors');
+const { UnauthorizedError } = require('../../errors');
 
 /*
 
