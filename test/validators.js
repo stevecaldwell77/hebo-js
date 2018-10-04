@@ -1,7 +1,13 @@
 const test = require('ava');
 const shortid = require('shortid');
-const { omit } = require('lodash');
-const { validateEvent, validateAggregate } = require('../validators');
+const { omit, noop } = require('lodash');
+const {
+    validateEvent,
+    validateAggregate,
+    validateEventRepository,
+    validateNotificationHandler,
+    validateSnapshotRepository,
+} = require('../validators');
 const libraryAggregate = require('./helpers/aggregates/library');
 
 test('validateEvent()', t => {
@@ -150,4 +156,80 @@ test('validateAggregate()', t => {
         /"createEvent" is required/,
         'command > createEvent required',
     );
+});
+
+test('validateEventRepository()', t => {
+    const validRepo = {
+        getEvents: noop,
+        writeEvent: noop,
+    };
+
+    {
+        const { error } = validateEventRepository(validRepo);
+        t.is(error, null, 'no error for valid repo passes');
+    }
+
+    {
+        const { error } = validateEventRepository(omit(validRepo, 'getEvents'));
+        t.snapshot(error, 'error when getEvents omitted');
+    }
+
+    {
+        const { error } = validateEventRepository(
+            omit(validRepo, 'writeEvent'),
+        );
+        t.snapshot(error, 'error when writeEvent omitted');
+    }
+});
+
+test('validateNotificationHandler()', t => {
+    const validHandler = {
+        invalidEventsFound: noop,
+        eventWritten: noop,
+    };
+
+    {
+        const { error } = validateNotificationHandler(validHandler);
+        t.is(error, null, 'no error for valid repo passes');
+    }
+
+    {
+        const { error } = validateNotificationHandler(
+            omit(validHandler, 'invalidEventsFound'),
+        );
+        t.snapshot(error, 'error when invalidEventsFound omitted');
+    }
+
+    {
+        const { error } = validateNotificationHandler(
+            omit(validHandler, 'eventWritten'),
+        );
+        t.snapshot(error, 'error when eventWritten omitted');
+    }
+});
+
+test('validateSnapshotRepository()', t => {
+    const validRepo = {
+        getSnapshot: noop,
+        writeSnapshot: noop,
+    };
+
+    {
+        const { error } = validateSnapshotRepository(validRepo);
+        t.is(error, null, 'no error for valid repo passes');
+    }
+
+    {
+        const { error } = validateSnapshotRepository(
+            omit(validRepo, 'getSnapshot'),
+        );
+        t.snapshot(error, 'error when getSnapshot omitted');
+    }
+
+    {
+        const { error } = validateSnapshotRepository(
+            omit(validRepo, 'writeSnapshot'),
+        );
+        t.snapshot(error, 'error when writeSnapshot omitted');
+    }
 });

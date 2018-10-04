@@ -94,6 +94,8 @@ const eventRepositorySchema = Joi.object()
     })
     .unknown();
 
+const validateEventRepository = r => Joi.validate(r, eventRepositorySchema);
+
 const snapshotRepositorySchema = Joi.object()
     .keys({
         getSnapshot: Joi.func().required(),
@@ -101,12 +103,18 @@ const snapshotRepositorySchema = Joi.object()
     })
     .unknown();
 
+const validateSnapshotRepository = r =>
+    Joi.validate(r, snapshotRepositorySchema);
+
 const notificationHandlerSchema = Joi.object()
     .keys({
         invalidEventsFound: Joi.func().required(),
         eventWritten: Joi.func().required(),
     })
     .unknown();
+
+const validateNotificationHandler = r =>
+    Joi.validate(r, notificationHandlerSchema);
 
 const authorizerSchema = Joi.object()
     .keys({
@@ -121,4 +129,7 @@ module.exports = {
     snapshotRepositorySchema,
     validateAggregate,
     validateEvent,
+    validateEventRepository,
+    validateNotificationHandler,
+    validateSnapshotRepository,
 };
