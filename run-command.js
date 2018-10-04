@@ -112,7 +112,7 @@ const runCommand = async args => {
         aggregateId,
         commandName,
         commandParams,
-        isCreateCommand = false,
+        isCreateCommand,
         validateParams: runValidateParams,
         getProjection: runGetProjection,
         createEvent: runCreateEvent,
