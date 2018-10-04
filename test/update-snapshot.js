@@ -3,9 +3,9 @@ const shortid = require('shortid');
 const sinon = require('sinon');
 const EventRepository = require('hebo-event-repository-inmemory');
 const SnapshotRepository = require('hebo-snapshot-repository-inmemory');
+const NotificationHandler = require('hebo-notification-handler-inmemory');
 const Hebo = require('..');
 const { UnauthorizedError } = require('../errors');
-const NotificationHandler = require('./helpers/notification-handler-inmemory');
 const libraryAggregate = require('./helpers/aggregates/library');
 const { users, getAuthorizer } = require('./helpers/authorizer');
 

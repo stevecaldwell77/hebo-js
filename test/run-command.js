@@ -4,6 +4,7 @@ const sinon = require('sinon');
 const Joi = require('joi');
 const EventRepository = require('hebo-event-repository-inmemory');
 const SnapshotRepository = require('hebo-snapshot-repository-inmemory');
+const NotificationHandler = require('hebo-notification-handler-inmemory');
 const Hebo = require('..');
 const {
     AggregateNotFoundError,
@@ -17,7 +18,6 @@ const {
     UnknownCommandError,
 } = require('../errors');
 const { makeValidator } = require('../util');
-const NotificationHandler = require('./helpers/notification-handler-inmemory');
 const libraryAggregate = require('./helpers/aggregates/library');
 const { users, getAuthorizer } = require('./helpers/authorizer');
 
