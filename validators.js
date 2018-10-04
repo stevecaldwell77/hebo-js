@@ -25,7 +25,7 @@ const eventSchema = Joi.object()
     })
     .unknown();
 
-module.exports.validateEvent = event => {
+const validateEvent = event => {
     const { error } = Joi.validate(event, eventSchema);
 
     if (error) {
@@ -55,7 +55,7 @@ const commandSchema = Joi.object().keys({
         .positive(),
 });
 
-module.exports.validateAggregate = (aggregate, aggregateName) => {
+const validateAggregate = (aggregate, aggregateName) => {
     const { error: aggregateError } = Joi.validate(aggregate, aggregateSchema);
     if (aggregateError) {
         throw new InvalidAggregateError(
@@ -87,29 +87,38 @@ module.exports.validateAggregate = (aggregate, aggregateName) => {
     });
 };
 
-module.exports.eventRepositorySchema = Joi.object()
+const eventRepositorySchema = Joi.object()
     .keys({
         getEvents: Joi.func().required(),
         writeEvent: Joi.func().required(),
     })
     .unknown();
 
-module.exports.snapshotRepositorySchema = Joi.object()
+const snapshotRepositorySchema = Joi.object()
     .keys({
         getSnapshot: Joi.func().required(),
         writeSnapshot: Joi.func().required(),
     })
     .unknown();
 
-module.exports.notificationHandlerSchema = Joi.object()
+const notificationHandlerSchema = Joi.object()
     .keys({
         invalidEventsFound: Joi.func().required(),
         eventWritten: Joi.func().required(),
     })
     .unknown();
 
-module.exports.authorizerSchema = Joi.object()
+const authorizerSchema = Joi.object()
     .keys({
         assert: Joi.func().required(),
     })
     .unknown();
+
+module.exports = {
+    authorizerSchema,
+    eventRepositorySchema,
+    notificationHandlerSchema,
+    snapshotRepositorySchema,
+    validateAggregate,
+    validateEvent,
+};
