@@ -3049,19 +3049,36 @@ has@^1.0.1:
   dependencies:
     function-bind "^1.1.1"
 
-hebo-event-repository-inmemory@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/hebo-event-repository-inmemory/-/hebo-event-repository-inmemory-1.0.1.tgz#116d4a9c980bc877e50569a4535809339dc33f06"
-  integrity sha512-MrIAVDciSJRvoFog4a/54wDiHhUT6e8JeStkMyPJOUkCN+D7MDbeBxQR/HhXziyhfEqA0alFfg+8q0Dx+i6daQ==
+hebo-event-repository-inmemory@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/hebo-event-repository-inmemory/-/hebo-event-repository-inmemory-1.0.2.tgz#2af4bd41fc09eb8d6ca7f6785f33448fc7151168"
+  integrity sha512-hED2H92LBoF5ph1sVkQBF/f1+PVEEZDFaTYd2FQgI5Mmv4Q9p1zRFtqleQsUsiFv0ifrr4XSLbnJ0VPVXsosHA==
   dependencies:
     auto-bind "^1.2.1"
-    hebo "^0.2.1"
+    hebo "^0.3.2"
     lodash "^4.17.11"
 
-hebo@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/hebo/-/hebo-0.2.1.tgz#f9d085f72f0ecb0668354e06a1d90637771b534f"
-  integrity sha512-csEdvaxRU/msHDzNT7oZeiY8fXzdK/Hf69TP3g+mFBJv73k2zFJtMhlhUUYq9ZCf653ZvKyUUjaepzIEF9T7Aw==
+hebo-notification-handler-inmemory@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/hebo-notification-handler-inmemory/-/hebo-notification-handler-inmemory-1.0.1.tgz#732e53baeef3aae088efb0eca0a7e9363c3694bd"
+  integrity sha512-KQC4SxG73h09NI+iSpuKAe21h4h9BDTWeMzrJe4bKH6pMf+NZ60MmRhLqKAk8qQhVPTZZLhG7/NsLR0AGPHJ2w==
+  dependencies:
+    auto-bind "^1.2.1"
+    hebo "^0.3.3"
+
+hebo-snapshot-repository-inmemory@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/hebo-snapshot-repository-inmemory/-/hebo-snapshot-repository-inmemory-1.0.1.tgz#2be55b33ee6bd703b5b19c48b5011a5d468fd250"
+  integrity sha512-MJzVfw0pa3JCpaWiROd15HmYT7IDE9QxhfYv/7E//ihBq/idq4e8cNN/ARktF3KiaYUTuvVVuET1iymX13tzXA==
+  dependencies:
+    auto-bind "^1.2.1"
+    hebo "^0.3.3"
+    lodash "^4.17.11"
+
+hebo@^0.3.2, hebo@^0.3.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/hebo/-/hebo-0.3.3.tgz#5cd273779477092a88033fec93b6debd217726e5"
+  integrity sha512-aWb0OS1G1BCO2Fnr0L6gWzm3neppY5eBIqFj/GEHC0Ttdgk8my018APqBRG7IqM/nXUbpJCHigFxHlPhmZ72fQ==
   dependencies:
     immer "^1.7.2"
     joi "^13.6.0"
