@@ -35,7 +35,6 @@
     "cross-env": "latest",
     "eslint": "latest",
     "eslint-config-prettier": "latest",
-    "eslint-config-xo-lass": "latest",
     "eslint-plugin-prettier": "latest",
     "fixpack": "latest",
     "hebo-event-repository-inmemory": "^1.0.2",
@@ -97,6 +96,7 @@
   },
   "prettier": {
     "singleQuote": true,
+    "useTabs": false,
     "bracketSpacing": true,
     "trailingComma": "all",
     "tabWidth": 4
@@ -120,19 +120,14 @@
   },
   "xo": {
     "prettier": true,
-    "space": 4,
-    "extends": [
-      "xo-lass"
-    ],
-    "parserOptions": {
-      "sourceType": "module"
-    },
     "rules": {
-      "max-len": [
+      "capitalized-comments": "off",
+      "no-warning-comments": "off",
+      "ava/no-todo-test": "off",
+      "unicorn/catch-error-name": [
         "error",
         {
-          "code": 80,
-          "ignoreUrls": true
+          "name": "err"
         }
       ]
     }
