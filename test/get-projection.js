@@ -2,9 +2,9 @@ const test = require('ava');
 const shortid = require('shortid');
 const sinon = require('sinon');
 const EventRepository = require('hebo-event-repository-inmemory');
+const SnapshotRepository = require('hebo-snapshot-repository-inmemory');
 const Hebo = require('..');
 const { UnauthorizedError } = require('../errors');
-const SnapshotRepository = require('./helpers/snapshot-repository-inmemory');
 const NotificationHandler = require('./helpers/notification-handler-inmemory');
 const libraryAggregate = require('./helpers/aggregates/library');
 const { users, getAuthorizer } = require('./helpers/authorizer');
@@ -19,7 +19,7 @@ const getEventRepository = () =>
     new EventRepository({ aggregates: ['library'] });
 
 const getEmptySnapshotRepository = () =>
-    new SnapshotRepository({ library: {} });
+    new SnapshotRepository({ aggregates: ['library'] });
 
 const setupBasicLibrary = async (name, city) => {
     const libraryId = shortid.generate();

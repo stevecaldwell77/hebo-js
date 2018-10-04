@@ -1,9 +1,9 @@
 const test = require('ava');
 const { isFunction, omit } = require('lodash');
 const EventRepository = require('hebo-event-repository-inmemory');
+const SnapshotRepository = require('hebo-snapshot-repository-inmemory');
 const Hebo = require('..');
 const { InvalidAggregateError, UnknownAggregateError } = require('../errors');
-const SnapshotRepository = require('./helpers/snapshot-repository-inmemory');
 const NotificationHandler = require('./helpers/notification-handler-inmemory');
 const libraryAggregate = require('./helpers/aggregates/library');
 const { users, getAuthorizer } = require('./helpers/authorizer');
@@ -42,7 +42,7 @@ test('connect()', t => {
 
     const validParams = {
         eventRepository: new EventRepository({ aggregates: ['library'] }),
-        snapshotRepository: new SnapshotRepository(),
+        snapshotRepository: new SnapshotRepository({ aggregates: ['library'] }),
         notificationHandler: new NotificationHandler(),
         authorizer: getAuthorizer(),
         user: users.superSally,
@@ -116,7 +116,7 @@ test('getAggregate()', t => {
 
     const getAggregate = hebo.connect({
         eventRepository: new EventRepository({ aggregates: ['library'] }),
-        snapshotRepository: new SnapshotRepository(),
+        snapshotRepository: new SnapshotRepository({ aggregates: ['library'] }),
         notificationHandler: new NotificationHandler(),
         authorizer: getAuthorizer(),
         user: users.superSally,
