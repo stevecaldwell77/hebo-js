@@ -41,7 +41,7 @@ test('connect()', t => {
     });
 
     const validParams = {
-        eventRepository: new EventRepository(),
+        eventRepository: new EventRepository({ aggregates: ['library'] }),
         snapshotRepository: new SnapshotRepository(),
         notificationHandler: new NotificationHandler(),
         authorizer: getAuthorizer(),
@@ -115,7 +115,7 @@ test('getAggregate()', t => {
     });
 
     const getAggregate = hebo.connect({
-        eventRepository: new EventRepository(),
+        eventRepository: new EventRepository({ aggregates: ['library'] }),
         snapshotRepository: new SnapshotRepository(),
         notificationHandler: new NotificationHandler(),
         authorizer: getAuthorizer(),
