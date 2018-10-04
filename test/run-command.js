@@ -202,8 +202,6 @@ test('applyEvent throws error', async t => {
 test('validateState throws error', async t => {
     const { getAggregate, eventRepository, libraryId } = await setupTest();
 
-    console.log(eventRepository);
-
     await eventRepository.writeEvent('library', libraryId, {
         eventId: shortid.generate(),
         type: 'CREATED',
