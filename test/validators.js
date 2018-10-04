@@ -166,7 +166,7 @@ test('validateEventRepository()', t => {
 
     {
         const { error } = validateEventRepository(validRepo);
-        t.is(error, null, 'no error for valid repo passes');
+        t.is(error, null, 'no error for valid repo');
     }
 
     {
@@ -190,7 +190,7 @@ test('validateNotificationHandler()', t => {
 
     {
         const { error } = validateNotificationHandler(validHandler);
-        t.is(error, null, 'no error for valid repo passes');
+        t.is(error, null, 'no error for valid handler');
     }
 
     {
@@ -216,7 +216,7 @@ test('validateSnapshotRepository()', t => {
 
     {
         const { error } = validateSnapshotRepository(validRepo);
-        t.is(error, null, 'no error for valid repo passes');
+        t.is(error, null, 'no error for valid repo');
     }
 
     {
