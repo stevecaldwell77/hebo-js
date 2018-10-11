@@ -21,7 +21,7 @@ const getEventRepository = () =>
 const getEmptySnapshotRepository = () =>
     new SnapshotRepository({ aggregates: ['library'] });
 
-const setupBasicLibrary = async (name, city) => {
+const setupBasicLibrary = async (name, city, useSequenceNumber = true) => {
     const libraryId = shortid.generate();
     const eventRepository = getEventRepository();
     await eventRepository.writeEvent('library', libraryId, {
@@ -31,7 +31,7 @@ const setupBasicLibrary = async (name, city) => {
         metadata: {
             user: users.superSally,
         },
-        sequenceNumber: 1,
+        ...(useSequenceNumber && { sequenceNumber: 1 }),
         version: 1,
     });
     await eventRepository.writeEvent('library', libraryId, {
@@ -41,7 +41,7 @@ const setupBasicLibrary = async (name, city) => {
         metadata: {
             user: users.superSally,
         },
-        sequenceNumber: 2,
+        ...(useSequenceNumber && { sequenceNumber: 2 }),
         version: 2,
     });
     return { libraryId, eventRepository };
@@ -560,4 +560,92 @@ test('authorization', async t => {
         'error thrown when library-specific user runs getProjection() on a ' +
             'different library',
     );
+});
+
+test('use old event structure', async t => {
+    const { libraryId, eventRepository } = await setupBasicLibrary(
+        'North Branch',
+        'Los Angeles',
+        false,
+    );
+    const snapshotRepository = getEmptySnapshotRepository();
+    const authorizer = getAuthorizer(libraryId);
+
+    await testGetProjection({
+        t,
+        label: 'no snaphot',
+        aggregateName: 'library',
+        aggregateId: libraryId,
+        eventRepository,
+        snapshotRepository,
+        authorizer,
+        expectedProjection: {
+            state: {
+                libraryId,
+                libraryName: 'North Branch',
+                cityName: 'Los Angeles',
+                active: false,
+                books: [],
+            },
+            version: 2,
+            invalidEvents: [],
+            ignoredEvents: [],
+        },
+        expectedGetSnapshotCalls: [['library', libraryId]],
+        expectedGetEventsCalls: [['library', libraryId, 0]],
+        expectedNotifications: [],
+    });
+
+    const invalidEvent = {
+        eventId: shortid.generate(),
+        type: 'CITY_NAME_SET',
+        payload: {},
+        metadata: {
+            user: users.superSally,
+        },
+        version: 3,
+    };
+    await eventRepository.writeEvent('library', libraryId, invalidEvent);
+
+    await testGetProjection({
+        t,
+        label: 'no snaphot',
+        aggregateName: 'library',
+        aggregateId: libraryId,
+        eventRepository,
+        snapshotRepository,
+        authorizer,
+        expectedProjection: {
+            state: {
+                libraryId,
+                libraryName: 'North Branch',
+                cityName: 'Los Angeles',
+                active: false,
+                books: [],
+            },
+            version: 3,
+            invalidEvents: [
+                {
+                    eventId: invalidEvent.eventId,
+                    error: {
+                        name: 'EventPayloadError',
+                        message: 'event payload missing "name"',
+                    },
+                },
+            ],
+            ignoredEvents: [],
+        },
+        expectedGetSnapshotCalls: [['library', libraryId]],
+        expectedGetEventsCalls: [['library', libraryId, 0]],
+        expectedNotifications: [
+            {
+                name: 'invalidEventsFound',
+                notification: {
+                    aggregateName: 'library',
+                    aggregateId: libraryId,
+                    eventIds: [invalidEvent.eventId],
+                },
+            },
+        ],
+    });
 });
