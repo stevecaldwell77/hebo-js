@@ -16,7 +16,7 @@ const {
     MaxCommandAttemptsError,
     UnauthorizedError,
     UnknownCommandError,
-} = require('../errors');
+} = require('hebo-validation');
 const { makeValidator } = require('../util');
 const libraryAggregate = require('./helpers/aggregates/library');
 const { users, getAuthorizer } = require('./helpers/authorizer');

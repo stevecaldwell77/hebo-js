@@ -1,6 +1,6 @@
 import test from 'ava';
+import { UnknownEventTypeError } from 'hebo-validation';
 import { createReducer, getRequiredPayloadValue } from '../util';
-import { UnknownEventTypeError } from '../errors';
 
 const SET_FIRST_NAME = 'SET_FIRST_NAME';
 const SET_LAST_NAME = 'SET_LAST_NAME';

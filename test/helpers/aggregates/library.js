@@ -1,12 +1,12 @@
 const Joi = require('joi');
 const { noop } = require('lodash');
+const { UnknownEventTypeError } = require('hebo-validation');
 const {
     createReducer,
     getRequiredPayloadValue,
     assertInvariant,
     makeValidator,
 } = require('../../../util');
-const { UnknownEventTypeError } = require('../../../errors');
 
 const CREATED = 'CREATED';
 const NAME_SET = 'NAME_SET';

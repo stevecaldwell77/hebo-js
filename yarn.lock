@@ -3089,6 +3089,14 @@ hebo-snapshot-repository-inmemory@^1.0.1:
     hebo "^0.3.3"
     lodash "^4.17.11"
 
+hebo-validation@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/hebo-validation/-/hebo-validation-1.1.0.tgz#ebb7e368f631c323654952ba1e44baaa8055cae1"
+  integrity sha512-7Yzo7i8P5l91mpLrDnyFjFH2qWdkkXDd0RXrbd5nyL1J6cQ045YJdYv/ejbB89y83SCBBnnTAWY9qUjAzC2taw==
+  dependencies:
+    joi "^13.7.0"
+    lodash "^4.17.11"
+
 hebo@^0.3.2, hebo@^0.3.3:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/hebo/-/hebo-0.3.3.tgz#5cd273779477092a88033fec93b6debd217726e5"
@@ -3814,6 +3822,15 @@ joi@^13.6.0:
   version "13.6.0"
   resolved "https://registry.yarnpkg.com/joi/-/joi-13.6.0.tgz#877d820e3ad688a49c32421ffefc746bfbe2d0a0"
   integrity sha512-E4QB0yRgEa6ZZKcSHJuBC+QeAwy+akCG0Bsa9edLqljyhlr+GuGDSmXYW1q7sj/FuAPy+ECUI3evVtK52tVfwg==
+  dependencies:
+    hoek "5.x.x"
+    isemail "3.x.x"
+    topo "3.x.x"
+
+joi@^13.7.0:
+  version "13.7.0"
+  resolved "https://registry.yarnpkg.com/joi/-/joi-13.7.0.tgz#cfd85ebfe67e8a1900432400b4d03bbd93fb879f"
+  integrity sha512-xuY5VkHfeOYK3Hdi91ulocfuFopwgbSORmIwzcwHKESQhC7w1kD5jaVSPnqDxS2I8t3RZ9omCKAxNwXN5zG1/Q==
   dependencies:
     hoek "5.x.x"
     isemail "3.x.x"
@@ -5723,7 +5740,7 @@ remark-heading-gap@^3.0.0:
   resolved "https://registry.yarnpkg.com/remark-heading-gap/-/remark-heading-gap-3.0.0.tgz#f52ac47a27995ef3248a59eb7544b5620b4736a6"
   integrity sha1-9SrEeieZXvMkilnrdUS1YgtHNqY=
 
-"remark-license@github:niftylettuce/remark-license":
+remark-license@niftylettuce/remark-license:
   version "4.0.1"
   resolved "https://codeload.github.com/niftylettuce/remark-license/tar.gz/17ecb8f64f8f6082414d14f9267a12764e6ddbfb"
   dependencies:

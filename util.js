@@ -2,7 +2,10 @@ const { produce } = require('immer');
 const isNil = require('lodash/isNil');
 const has = require('lodash/has');
 const Joi = require('joi');
-const { EventPayloadError, InvariantViolatedError } = require('./errors');
+const {
+    EventPayloadError,
+    InvariantViolatedError,
+} = require('hebo-validation');
 
 module.exports.createReducer = handlers =>
     produce((draft, event) => {

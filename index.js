@@ -4,17 +4,18 @@ const has = require('lodash/has');
 const mapValues = require('lodash/mapValues');
 const curry = require('lodash/fp/curry');
 const Joi = require('joi');
-const getProjection = require('./get-projection');
-const updateSnapshot = require('./update-snapshot');
-const runCommand = require('./run-command');
-const { UnknownAggregateError, UnknownCommandError } = require('./errors');
 const {
     eventRepositorySchema,
     snapshotRepositorySchema,
     notificationHandlerSchema,
     authorizerSchema,
     validateAggregate,
-} = require('./validators');
+    UnknownAggregateError,
+    UnknownCommandError,
+} = require('hebo-validation');
+const getProjection = require('./get-projection');
+const updateSnapshot = require('./update-snapshot');
+const runCommand = require('./run-command');
 
 // Creates an EventEmitter object and wires up listeners
 const createNotifier = notificationHandler => {

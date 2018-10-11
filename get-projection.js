@@ -1,5 +1,5 @@
 const isNil = require('lodash/isNil');
-const { validateEvent } = require('./validators');
+const { validateEvent } = require('hebo-validation');
 
 // Produces an initial projection from calling initialState.
 const makeInitialProjection = (aggregateId, initialState) => ({

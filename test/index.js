@@ -4,7 +4,10 @@ const EventRepository = require('hebo-event-repository-inmemory');
 const SnapshotRepository = require('hebo-snapshot-repository-inmemory');
 const NotificationHandler = require('hebo-notification-handler-inmemory');
 const Hebo = require('..');
-const { InvalidAggregateError, UnknownAggregateError } = require('../errors');
+const {
+    InvalidAggregateError,
+    UnknownAggregateError,
+} = require('hebo-validation');
 const libraryAggregate = require('./helpers/aggregates/library');
 const { users, getAuthorizer } = require('./helpers/authorizer');
 

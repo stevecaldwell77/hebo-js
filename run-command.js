@@ -1,11 +1,11 @@
 const shortid = require('shortid');
-const { validateEvent } = require('./validators');
 const {
+    validateEvent,
     AggregateNotFoundError,
     DuplicateAggregateError,
     InvalidCommandParamsError,
     MaxCommandAttemptsError,
-} = require('./errors');
+} = require('hebo-validation');
 
 // Run parameter validation, throwing typed error if it fails.
 const validateParams = ({

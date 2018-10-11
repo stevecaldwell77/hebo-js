@@ -7,7 +7,7 @@ const {
     validateEventRepository,
     validateNotificationHandler,
     validateSnapshotRepository,
-} = require('../validators');
+} = require('hebo-validation');
 const libraryAggregate = require('./helpers/aggregates/library');
 
 test('validateEvent()', t => {

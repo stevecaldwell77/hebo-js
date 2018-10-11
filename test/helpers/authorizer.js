@@ -1,5 +1,5 @@
 const shortid = require('shortid');
-const { UnauthorizedError } = require('../../errors');
+const { UnauthorizedError } = require('hebo-validation');
 
 /*
 
