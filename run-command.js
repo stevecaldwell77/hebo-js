@@ -46,12 +46,13 @@ const getProjection = async ({
     return projection;
 };
 
-const createEvent = ({ runCreateEvent, params, user, version }) => {
+const createEvent = ({ runCreateEvent, params, user, sequenceNumber }) => {
     const eventDetails = runCreateEvent(...params);
     return {
         eventId: shortid.generate(),
         metadata: { user },
-        version,
+        version: sequenceNumber,
+        sequenceNumber,
         ...eventDetails,
     };
 };
@@ -160,7 +161,7 @@ const runCommand = async args => {
         runCreateEvent,
         params,
         user,
-        version: projection.version + 1,
+        sequenceNumber: projection.version + 1,
     });
 
     eventValidation({

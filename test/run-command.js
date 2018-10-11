@@ -182,6 +182,7 @@ test('applyEvent throws error', async t => {
         metadata: {
             user: users.superSally,
         },
+        sequenceNumber: 1,
         version: 1,
     });
 
@@ -206,6 +207,7 @@ test('validateState throws error', async t => {
         metadata: {
             user: users.superSally,
         },
+        sequenceNumber: 1,
         version: 1,
     });
 
@@ -231,6 +233,7 @@ test('retries - using defaultCommandRetries', async t => {
         metadata: {
             user: users.superSally,
         },
+        sequenceNumber: 1,
         version: 1,
     });
 
@@ -261,6 +264,7 @@ test('retries - command specific setting', async t => {
         metadata: {
             user: users.superSally,
         },
+        sequenceNumber: 1,
         version: 1,
     });
 
@@ -317,6 +321,7 @@ test('successful command', async t => {
             {
                 eventId: eventIds[0],
                 metadata: { user: users.superSally },
+                sequenceNumber: 1,
                 version: 1,
                 type: 'CREATED',
                 payload: { libraryId },
@@ -324,6 +329,7 @@ test('successful command', async t => {
             {
                 eventId: eventIds[1],
                 metadata: { user: users.superSally },
+                sequenceNumber: 2,
                 version: 2,
                 type: 'NAME_SET',
                 payload: { name: 'North' },
@@ -331,6 +337,7 @@ test('successful command', async t => {
             {
                 eventId: eventIds[2],
                 metadata: { user: users.superSally },
+                sequenceNumber: 3,
                 version: 3,
                 type: 'CITY_NAME_SET',
                 payload: { name: 'Omaha' },
@@ -409,6 +416,7 @@ test('successful command, with retry', async t => {
             {
                 eventId: events[0].eventId,
                 metadata: { user: users.superSally },
+                sequenceNumber: 1,
                 version: 1,
                 type: 'CREATED',
                 payload: { libraryId },

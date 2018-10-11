@@ -31,6 +31,7 @@ const setupBasicLibrary = async (name, city) => {
         metadata: {
             user: users.superSally,
         },
+        sequenceNumber: 1,
         version: 1,
     });
     await eventRepository.writeEvent('library', libraryId, {
@@ -40,6 +41,7 @@ const setupBasicLibrary = async (name, city) => {
         metadata: {
             user: users.superSally,
         },
+        sequenceNumber: 2,
         version: 2,
     });
     return { libraryId, eventRepository };
@@ -271,6 +273,7 @@ test('aggregate with snapshots', async t => {
         metadata: {
             user: users.superSally,
         },
+        sequenceNumber: 3,
         version: 3,
     });
 
@@ -321,6 +324,7 @@ test('handing bad events', async t => {
         metadata: {
             user: users.superSally,
         },
+        sequenceNumber: 3,
         version: 3,
     };
     await eventRepository.writeEvent('library', libraryId, invalidEvent1);
@@ -333,6 +337,7 @@ test('handing bad events', async t => {
         metadata: {
             user: users.superSally,
         },
+        sequenceNumber: 4,
         version: 4,
     };
     await eventRepository.writeEvent('library', libraryId, invalidEvent2);
@@ -346,6 +351,7 @@ test('handing bad events', async t => {
         metadata: {
             user: users.superSally,
         },
+        sequenceNumber: 5,
         version: 5,
     });
 
@@ -359,6 +365,7 @@ test('handing bad events', async t => {
         payload: {
             name: 'Playa Vista',
         },
+        sequenceNumber: 6,
         version: 6,
     };
     await eventRepository.forceWriteEvent('library', libraryId, invalidEvent3);
@@ -444,6 +451,7 @@ test('handing bad events', async t => {
             user: users.superSally,
             resolvesEventIds: [invalidEvent1.eventId, invalidEvent3.eventId],
         },
+        sequenceNumber: 7,
         version: 7,
     };
     await eventRepository.writeEvent('library', libraryId, resolvingEvent1);
@@ -456,6 +464,7 @@ test('handing bad events', async t => {
             user: users.superSally,
             resolvesEventIds: [invalidEvent2.eventId],
         },
+        sequenceNumber: 8,
         version: 8,
     };
     await eventRepository.writeEvent('library', libraryId, resolvingEvent2);

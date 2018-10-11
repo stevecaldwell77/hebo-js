@@ -66,7 +66,7 @@ const handleValidEvent = ({ prevProjection, event, newState }) => {
     return {
         ...prevProjection,
         state: newState,
-        version: event.version,
+        version: event.sequenceNumber ? event.sequenceNumber : event.version,
         invalidEvents: getInvalidEvents({ prevProjection, resolvedEvents }),
         ignoredEvents: getIgnoredEvents({
             prevProjection,
@@ -84,7 +84,7 @@ const handleBadEvent = ({ prevProjection, event, err }) => {
     };
     return {
         ...prevProjection,
-        version: event.version,
+        version: event.sequenceNumber ? event.sequenceNumber : event.version,
         invalidEvents: [
             ...prevProjection.invalidEvents,
             {
@@ -165,7 +165,7 @@ Parameters:
     Signature: (aggregateId) -> newState
 
   getEvents: Function for retrieving events for the aggregate.
-    Signature: (aggregateName, aggregateId, greaterThanVersion)
+    Signature: (aggregateName, aggregateId, greaterThanSequenceNumber)
       -> Promise<Array<events>>
 
   applyEvent: Function for applying an event to a previous projection. Used to

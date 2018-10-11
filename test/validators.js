@@ -17,6 +17,7 @@ test('validateEvent()', t => {
         payload: {},
         metadata: {},
         version: 1,
+        sequenceNumber: 1,
     };
 
     t.notThrows(() => validateEvent(validEvent), 'valid event passes');
@@ -70,21 +71,21 @@ test('validateEvent()', t => {
     );
 
     t.throws(
-        () => validateEvent(omit(validEvent, 'version')),
-        /"version" is required/,
-        'version required',
+        () => validateEvent(omit(validEvent, ['version', 'sequenceNumber'])),
+        /must contain at least one of \[version, sequenceNumber\]/,
+        'version or sequenceNumber required',
     );
 
     t.throws(
-        () => validateEvent({ ...validEvent, version: 'asdf' }),
-        /"version" must be a number/,
-        'version must be a number',
+        () => validateEvent({ ...validEvent, sequenceNumber: 'asdf' }),
+        /"sequenceNumber" must be a number/,
+        'sequenceNumber must be a number',
     );
 
     t.throws(
-        () => validateEvent({ ...validEvent, version: 0 }),
-        /"version" must be greater than 0/,
-        'version must be positive',
+        () => validateEvent({ ...validEvent, sequenceNumber: 0 }),
+        /"sequenceNumber" must be greater than 0/,
+        'sequenceNumber must be positive',
     );
 });
 

@@ -20,9 +20,12 @@ const eventSchema = Joi.object()
         payload: Joi.object().required(),
         version: Joi.number()
             .integer()
-            .greater(0)
-            .required(),
+            .greater(0),
+        sequenceNumber: Joi.number()
+            .integer()
+            .greater(0),
     })
+    .or('version', 'sequenceNumber')
     .unknown();
 
 const validateEvent = event => {

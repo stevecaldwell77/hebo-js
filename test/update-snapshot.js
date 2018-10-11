@@ -38,6 +38,7 @@ const setupTest = async (user = users.superSally) => {
         metadata: {
             user: users.superSally,
         },
+        sequenceNumber: 1,
         version: 1,
     });
 
@@ -99,6 +100,7 @@ test('updateSnapshot() writes snapshot correctly', async t => {
         metadata: {
             user: users.superSally,
         },
+        sequenceNumber: 2,
         version: 2,
     });
 
