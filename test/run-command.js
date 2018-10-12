@@ -1,5 +1,6 @@
 const test = require('ava');
 const shortid = require('shortid');
+const uuid = require('uuid/v4');
 const sinon = require('sinon');
 const Joi = require('joi');
 const EventRepository = require('hebo-event-repository-inmemory');
@@ -178,7 +179,7 @@ test('applyEvent throws error', async t => {
     await eventRepository.writeEvent({
         aggregateName: 'brokenCity',
         aggregateId: cityId,
-        eventId: shortid.generate(),
+        eventId: uuid(),
         type: 'CREATED',
         payload: { cityId },
         metadata: {
@@ -204,7 +205,7 @@ test('validateState throws error', async t => {
     await eventRepository.writeEvent({
         aggregateName: 'library',
         aggregateId: libraryId,
-        eventId: shortid.generate(),
+        eventId: uuid(),
         type: 'CREATED',
         payload: { libraryId },
         metadata: {
@@ -231,7 +232,7 @@ test('retries - using defaultCommandRetries', async t => {
     await eventRepository.writeEvent({
         aggregateName: 'library',
         aggregateId: libraryId,
-        eventId: shortid.generate(),
+        eventId: uuid(),
         type: 'CREATED',
         payload: { libraryId },
         metadata: {
@@ -263,7 +264,7 @@ test('retries - command specific setting', async t => {
     await eventRepository.writeEvent({
         aggregateName: 'library',
         aggregateId: libraryId,
-        eventId: shortid.generate(),
+        eventId: uuid(),
         type: 'CREATED',
         payload: { libraryId },
         metadata: {

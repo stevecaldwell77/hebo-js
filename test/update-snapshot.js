@@ -1,5 +1,6 @@
 const test = require('ava');
 const shortid = require('shortid');
+const uuid = require('uuid/v4');
 const sinon = require('sinon');
 const EventRepository = require('hebo-event-repository-inmemory');
 const SnapshotRepository = require('hebo-snapshot-repository-inmemory');
@@ -34,7 +35,7 @@ const setupTest = async (user = users.superSally) => {
     await eventRepository.writeEvent({
         aggregateName: 'library',
         aggregateId: libraryId,
-        eventId: shortid.generate(),
+        eventId: uuid(),
         type: 'CITY_NAME_SET',
         payload: { name: 'Los Angeles' },
         metadata: {
@@ -97,7 +98,7 @@ test('updateSnapshot() writes snapshot correctly', async t => {
     await eventRepository.writeEvent({
         aggregateName: 'library',
         aggregateId: libraryId,
-        eventId: shortid.generate(),
+        eventId: uuid(),
         type: 'NAME_SET',
         payload: { name: 'South Branch' },
         metadata: {

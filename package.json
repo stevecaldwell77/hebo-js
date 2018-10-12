@@ -24,7 +24,8 @@
     "immer": "^1.7.2",
     "joi": "^13.6.0",
     "lodash": "^4.17.11",
-    "shortid": "^2.2.13"
+    "shortid": "^2.2.13",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^7.2.0",

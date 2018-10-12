@@ -1,5 +1,6 @@
 const test = require('ava');
 const shortid = require('shortid');
+const uuid = require('uuid/v4');
 const sinon = require('sinon');
 const EventRepository = require('hebo-event-repository-inmemory');
 const SnapshotRepository = require('hebo-snapshot-repository-inmemory');
@@ -27,7 +28,7 @@ const setupBasicLibrary = async (name, city) => {
     await eventRepository.writeEvent({
         aggregateName: 'library',
         aggregateId: libraryId,
-        eventId: shortid.generate(),
+        eventId: uuid(),
         type: 'NAME_SET',
         payload: { name },
         metadata: {
@@ -38,7 +39,7 @@ const setupBasicLibrary = async (name, city) => {
     await eventRepository.writeEvent({
         aggregateName: 'library',
         aggregateId: libraryId,
-        eventId: shortid.generate(),
+        eventId: uuid(),
         type: 'CITY_NAME_SET',
         payload: { name: city },
         metadata: {
@@ -271,7 +272,7 @@ test('aggregate with snapshots', async t => {
     await eventRepository.writeEvent({
         aggregateName: 'library',
         aggregateId: libraryId,
-        eventId: shortid.generate(),
+        eventId: uuid(),
         type: 'CITY_NAME_SET',
         payload: { name: 'Playa Del Rey' },
         metadata: {
@@ -323,7 +324,7 @@ test('handing bad events', async t => {
     const invalidEvent1 = {
         aggregateName: 'library',
         aggregateId: libraryId,
-        eventId: shortid.generate(),
+        eventId: uuid(),
         type: 'CITY_NAME_SET',
         payload: {},
         metadata: {
@@ -337,7 +338,7 @@ test('handing bad events', async t => {
     const invalidEvent2 = {
         aggregateName: 'library',
         aggregateId: libraryId,
-        eventId: shortid.generate(),
+        eventId: uuid(),
         type: 'ACTIVATED',
         payload: {},
         metadata: {
@@ -352,7 +353,7 @@ test('handing bad events', async t => {
     await eventRepository.writeEvent({
         aggregateName: 'library',
         aggregateId: libraryId,
-        eventId: shortid.generate(),
+        eventId: uuid(),
         type: 'NAME_SET',
         payload: { name: 'Rodgers Branch' },
         metadata: {
@@ -368,7 +369,7 @@ test('handing bad events', async t => {
     const invalidEvent3 = {
         aggregateName: 'library',
         aggregateId: libraryId,
-        eventId: shortid.generate(),
+        eventId: uuid(),
         type: 'CITY_NAME_SET',
         payload: {
             name: 'Playa Vista',
@@ -451,7 +452,7 @@ test('handing bad events', async t => {
     const resolvingEvent1 = {
         aggregateName: 'library',
         aggregateId: libraryId,
-        eventId: shortid.generate(),
+        eventId: uuid(),
         type: 'CITY_NAME_SET',
         payload: {
             name: 'Playa Vista',
@@ -467,7 +468,7 @@ test('handing bad events', async t => {
     const resolvingEvent2 = {
         aggregateName: 'library',
         aggregateId: libraryId,
-        eventId: shortid.generate(),
+        eventId: uuid(),
         type: 'DEACTIVATED',
         payload: {},
         metadata: {

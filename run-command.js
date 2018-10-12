@@ -1,4 +1,4 @@
-const shortid = require('shortid');
+const uuid = require('uuid/v4');
 const {
     validateEvent,
     AggregateNotFoundError,
@@ -58,7 +58,7 @@ const createEvent = ({
     return {
         aggregateName,
         aggregateId,
-        eventId: shortid.generate(),
+        eventId: uuid(),
         metadata: { user },
         sequenceNumber,
         ...eventDetails,
