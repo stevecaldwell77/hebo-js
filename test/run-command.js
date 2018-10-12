@@ -175,7 +175,9 @@ test('applyEvent throws error', async t => {
 
     const cityId = shortid.generate();
 
-    await eventRepository.writeEvent('brokenCity', cityId, {
+    await eventRepository.writeEvent({
+        aggregateName: 'brokenCity',
+        aggregateId: cityId,
         eventId: shortid.generate(),
         type: 'CREATED',
         payload: { cityId },
@@ -199,7 +201,9 @@ test('applyEvent throws error', async t => {
 test('validateState throws error', async t => {
     const { getAggregate, eventRepository, libraryId } = await setupTest();
 
-    await eventRepository.writeEvent('library', libraryId, {
+    await eventRepository.writeEvent({
+        aggregateName: 'library',
+        aggregateId: libraryId,
         eventId: shortid.generate(),
         type: 'CREATED',
         payload: { libraryId },
@@ -224,7 +228,9 @@ test('validateState throws error', async t => {
 test('retries - using defaultCommandRetries', async t => {
     const { getAggregate, eventRepository, libraryId } = await setupTest();
 
-    await eventRepository.writeEvent('library', libraryId, {
+    await eventRepository.writeEvent({
+        aggregateName: 'library',
+        aggregateId: libraryId,
         eventId: shortid.generate(),
         type: 'CREATED',
         payload: { libraryId },
@@ -254,7 +260,9 @@ test('retries - using defaultCommandRetries', async t => {
 test('retries - command specific setting', async t => {
     const { getAggregate, eventRepository, libraryId } = await setupTest();
 
-    await eventRepository.writeEvent('library', libraryId, {
+    await eventRepository.writeEvent({
+        aggregateName: 'library',
+        aggregateId: libraryId,
         eventId: shortid.generate(),
         type: 'CREATED',
         payload: { libraryId },
@@ -315,6 +323,8 @@ test('successful command', async t => {
         events,
         [
             {
+                aggregateName: 'library',
+                aggregateId: libraryId,
                 eventId: eventIds[0],
                 metadata: { user: users.superSally },
                 sequenceNumber: 1,
@@ -322,6 +332,8 @@ test('successful command', async t => {
                 payload: { libraryId },
             },
             {
+                aggregateName: 'library',
+                aggregateId: libraryId,
                 eventId: eventIds[1],
                 metadata: { user: users.superSally },
                 sequenceNumber: 2,
@@ -329,6 +341,8 @@ test('successful command', async t => {
                 payload: { name: 'North' },
             },
             {
+                aggregateName: 'library',
+                aggregateId: libraryId,
                 eventId: eventIds[2],
                 metadata: { user: users.superSally },
                 sequenceNumber: 3,
@@ -407,6 +421,8 @@ test('successful command, with retry', async t => {
         events,
         [
             {
+                aggregateName: 'library',
+                aggregateId: libraryId,
                 eventId: events[0].eventId,
                 metadata: { user: users.superSally },
                 sequenceNumber: 1,

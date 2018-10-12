@@ -24,7 +24,9 @@ const getEmptySnapshotRepository = () =>
 const setupBasicLibrary = async (name, city) => {
     const libraryId = shortid.generate();
     const eventRepository = getEventRepository();
-    await eventRepository.writeEvent('library', libraryId, {
+    await eventRepository.writeEvent({
+        aggregateName: 'library',
+        aggregateId: libraryId,
         eventId: shortid.generate(),
         type: 'NAME_SET',
         payload: { name },
@@ -33,7 +35,9 @@ const setupBasicLibrary = async (name, city) => {
         },
         sequenceNumber: 1,
     });
-    await eventRepository.writeEvent('library', libraryId, {
+    await eventRepository.writeEvent({
+        aggregateName: 'library',
+        aggregateId: libraryId,
         eventId: shortid.generate(),
         type: 'CITY_NAME_SET',
         payload: { name: city },
@@ -264,7 +268,9 @@ test('aggregate with snapshots', async t => {
     });
 
     // Now add one more event, and make sure everything still works correctly.
-    await eventRepository.writeEvent('library', libraryId, {
+    await eventRepository.writeEvent({
+        aggregateName: 'library',
+        aggregateId: libraryId,
         eventId: shortid.generate(),
         type: 'CITY_NAME_SET',
         payload: { name: 'Playa Del Rey' },
@@ -315,6 +321,8 @@ test('handing bad events', async t => {
 
     // Invalid event: missing a name in the payload.
     const invalidEvent1 = {
+        aggregateName: 'library',
+        aggregateId: libraryId,
         eventId: shortid.generate(),
         type: 'CITY_NAME_SET',
         payload: {},
@@ -323,10 +331,12 @@ test('handing bad events', async t => {
         },
         sequenceNumber: 3,
     };
-    await eventRepository.writeEvent('library', libraryId, invalidEvent1);
+    await eventRepository.writeEvent(invalidEvent1);
 
     // Invalid event: our library doesn't have any books yet.
     const invalidEvent2 = {
+        aggregateName: 'library',
+        aggregateId: libraryId,
         eventId: shortid.generate(),
         type: 'ACTIVATED',
         payload: {},
@@ -335,11 +345,13 @@ test('handing bad events', async t => {
         },
         sequenceNumber: 4,
     };
-    await eventRepository.writeEvent('library', libraryId, invalidEvent2);
+    await eventRepository.writeEvent(invalidEvent2);
 
     // Now add a valid event. This event should be successfully applied to the
     // projection.
-    await eventRepository.writeEvent('library', libraryId, {
+    await eventRepository.writeEvent({
+        aggregateName: 'library',
+        aggregateId: libraryId,
         eventId: shortid.generate(),
         type: 'NAME_SET',
         payload: { name: 'Rodgers Branch' },
@@ -354,6 +366,8 @@ test('handing bad events', async t => {
     // valid event. This could happen if there was an error in the event
     // repository implementation.
     const invalidEvent3 = {
+        aggregateName: 'library',
+        aggregateId: libraryId,
         eventId: shortid.generate(),
         type: 'CITY_NAME_SET',
         payload: {
@@ -361,7 +375,7 @@ test('handing bad events', async t => {
         },
         sequenceNumber: 6,
     };
-    await eventRepository.forceWriteEvent('library', libraryId, invalidEvent3);
+    await eventRepository.forceWriteEvent(invalidEvent3);
 
     // Expected:
     //  * The bad events are stored to invalidEvents
@@ -435,6 +449,8 @@ test('handing bad events', async t => {
 
     // Now create 2 events that resolve the 3 issues.
     const resolvingEvent1 = {
+        aggregateName: 'library',
+        aggregateId: libraryId,
         eventId: shortid.generate(),
         type: 'CITY_NAME_SET',
         payload: {
@@ -446,9 +462,11 @@ test('handing bad events', async t => {
         },
         sequenceNumber: 7,
     };
-    await eventRepository.writeEvent('library', libraryId, resolvingEvent1);
+    await eventRepository.writeEvent(resolvingEvent1);
 
     const resolvingEvent2 = {
+        aggregateName: 'library',
+        aggregateId: libraryId,
         eventId: shortid.generate(),
         type: 'DEACTIVATED',
         payload: {},
@@ -458,7 +476,7 @@ test('handing bad events', async t => {
         },
         sequenceNumber: 8,
     };
-    await eventRepository.writeEvent('library', libraryId, resolvingEvent2);
+    await eventRepository.writeEvent(resolvingEvent2);
 
     // Expected:
     //  * The new events are applied

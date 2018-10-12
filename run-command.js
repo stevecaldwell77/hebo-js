@@ -46,9 +46,18 @@ const getProjection = async ({
     return projection;
 };
 
-const createEvent = ({ runCreateEvent, params, user, sequenceNumber }) => {
+const createEvent = ({
+    runCreateEvent,
+    aggregateName,
+    aggregateId,
+    params,
+    user,
+    sequenceNumber,
+}) => {
     const eventDetails = runCreateEvent(...params);
     return {
+        aggregateName,
+        aggregateId,
         eventId: shortid.generate(),
         metadata: { user },
         sequenceNumber,
@@ -158,6 +167,8 @@ const runCommand = async args => {
 
     const event = createEvent({
         runCreateEvent,
+        aggregateName,
+        aggregateId,
         params,
         user,
         sequenceNumber: projection.version + 1,
@@ -170,7 +181,7 @@ const runCommand = async args => {
         event,
     });
 
-    const success = await writeEvent(aggregateName, aggregateId, event);
+    const success = await writeEvent(event);
 
     // Retry if we failed to write event
     if (!success) {

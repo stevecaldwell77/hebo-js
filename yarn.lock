@@ -3063,13 +3063,13 @@ has@^1.0.1:
   dependencies:
     function-bind "^1.1.1"
 
-hebo-event-repository-inmemory@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/hebo-event-repository-inmemory/-/hebo-event-repository-inmemory-2.0.0.tgz#bbe78c285d431b1a9de1fe46da4bc348bbe7b6cb"
-  integrity sha512-rbrveDAPvICVzipA1B2szCigAxHI8TOZMQzqLaMdQLPHGosAYkZrA9TD3G7RiSXr2hMucmlnAjOzLYh9HajwyQ==
+hebo-event-repository-inmemory@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/hebo-event-repository-inmemory/-/hebo-event-repository-inmemory-3.0.0.tgz#3e9fd54f96050a2a00c3d87fa9192feb9205e5a3"
+  integrity sha512-5AH80L/xTrAXCyenUYtFfiCcIoD6UsUsgBq03owY7n7iiXBSE5MH8uO8ZJxO1dfMuvbcVq27D7hgbiTrfGpE2g==
   dependencies:
     auto-bind "^1.2.1"
-    hebo-validation "^2.0.0"
+    hebo-validation "^3.0.0"
     lodash "^4.17.11"
 
 hebo-notification-handler-inmemory@^1.0.1:
@@ -3089,10 +3089,10 @@ hebo-snapshot-repository-inmemory@^1.0.1:
     hebo "^0.3.3"
     lodash "^4.17.11"
 
-hebo-validation@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/hebo-validation/-/hebo-validation-2.0.0.tgz#7e24f23e79789e919604cbc82862f9dad63182d9"
-  integrity sha512-UCiEUVYz8Ru5LLov74wOYe3ayPd+VE7DYMB9OWQGqD5WfqXn3zZIov5JY3RsPHjOgLCBqnASi/KmOYrg8Sh+NA==
+hebo-validation@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/hebo-validation/-/hebo-validation-3.0.0.tgz#1ad6c89e1c1c4c7a8f4d8d05ebdd44eac8d95ff0"
+  integrity sha512-pqet3Oiw0cmZpfMU2LcyLVNSkXBoTrGqbTFrbtIRtL42Kzh+9bVxj1ORm3ENIOEsZqBnC7U24yrIPp3c4zzIUg==
   dependencies:
     joi "^13.7.0"
     lodash "^4.17.11"

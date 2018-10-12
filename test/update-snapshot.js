@@ -31,7 +31,9 @@ const setupTest = async (user = users.superSally) => {
         user,
     });
 
-    await eventRepository.writeEvent('library', libraryId, {
+    await eventRepository.writeEvent({
+        aggregateName: 'library',
+        aggregateId: libraryId,
         eventId: shortid.generate(),
         type: 'CITY_NAME_SET',
         payload: { name: 'Los Angeles' },
@@ -92,7 +94,9 @@ test('updateSnapshot() writes snapshot correctly', async t => {
         'snapshotted projection is expected',
     );
 
-    await eventRepository.writeEvent('library', libraryId, {
+    await eventRepository.writeEvent({
+        aggregateName: 'library',
+        aggregateId: libraryId,
         eventId: shortid.generate(),
         type: 'NAME_SET',
         payload: { name: 'South Branch' },
