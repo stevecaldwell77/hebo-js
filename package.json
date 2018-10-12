@@ -39,7 +39,7 @@
     "eslint-config-prettier": "^3.1.0",
     "eslint-plugin-prettier": "^3.0.0",
     "fixpack": "^2.3.1",
-    "hebo-event-repository-inmemory": "^3.0.0",
+    "hebo-event-repository-inmemory": "^3.0.2",
     "hebo-notification-handler-inmemory": "^1.0.1",
     "hebo-snapshot-repository-inmemory": "^1.0.1",
     "husky": "^1.1.2",

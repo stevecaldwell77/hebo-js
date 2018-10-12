@@ -3063,10 +3063,10 @@ has@^1.0.1:
   dependencies:
     function-bind "^1.1.1"
 
-hebo-event-repository-inmemory@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/hebo-event-repository-inmemory/-/hebo-event-repository-inmemory-3.0.0.tgz#3e9fd54f96050a2a00c3d87fa9192feb9205e5a3"
-  integrity sha512-5AH80L/xTrAXCyenUYtFfiCcIoD6UsUsgBq03owY7n7iiXBSE5MH8uO8ZJxO1dfMuvbcVq27D7hgbiTrfGpE2g==
+hebo-event-repository-inmemory@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/hebo-event-repository-inmemory/-/hebo-event-repository-inmemory-3.0.2.tgz#ac18d6d1ecea8c4330bbe3c798269e6a87b8c932"
+  integrity sha512-0On4S+scRLVJ92A0TzP7BadAbzpN5YDK7TXrTBLp6GcaCSpoyAXUdH1Ma+8TrvgBJDPkbh67rXvCu6vC8RQV7g==
   dependencies:
     auto-bind "^1.2.1"
     hebo-validation "^3.0.0"
