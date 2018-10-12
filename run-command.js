@@ -51,7 +51,6 @@ const createEvent = ({ runCreateEvent, params, user, sequenceNumber }) => {
     return {
         eventId: shortid.generate(),
         metadata: { user },
-        version: sequenceNumber,
         sequenceNumber,
         ...eventDetails,
     };

@@ -39,7 +39,6 @@ const setupTest = async (user = users.superSally) => {
             user: users.superSally,
         },
         sequenceNumber: 1,
-        version: 1,
     });
 
     return {
@@ -101,7 +100,6 @@ test('updateSnapshot() writes snapshot correctly', async t => {
             user: users.superSally,
         },
         sequenceNumber: 2,
-        version: 2,
     });
 
     const expectedProjection2 = {

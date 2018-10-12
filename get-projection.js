@@ -66,7 +66,7 @@ const handleValidEvent = ({ prevProjection, event, newState }) => {
     return {
         ...prevProjection,
         state: newState,
-        version: event.sequenceNumber ? event.sequenceNumber : event.version,
+        version: event.sequenceNumber,
         invalidEvents: getInvalidEvents({ prevProjection, resolvedEvents }),
         ignoredEvents: getIgnoredEvents({
             prevProjection,
@@ -84,7 +84,7 @@ const handleBadEvent = ({ prevProjection, event, err }) => {
     };
     return {
         ...prevProjection,
-        version: event.sequenceNumber ? event.sequenceNumber : event.version,
+        version: event.sequenceNumber,
         invalidEvents: [
             ...prevProjection.invalidEvents,
             {
