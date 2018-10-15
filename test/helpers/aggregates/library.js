@@ -106,7 +106,7 @@ const commands = {
     // create(libraryId)
     create: {
         isCreateCommand: true,
-        validateParams: validateLibraryId,
+        validateParams: libraryId => validateLibraryId(libraryId),
         createEvent: libraryId => ({
             type: CREATED,
             payload: { libraryId },
@@ -115,8 +115,8 @@ const commands = {
 
     // setName(name)
     setName: {
-        validateParams: validateLibraryName,
-        createEvent: name => ({
+        validateParams: (libraryId, name) => validateLibraryName(name),
+        createEvent: (libraryId, name) => ({
             type: NAME_SET,
             payload: { name },
         }),
@@ -125,8 +125,8 @@ const commands = {
 
     // setCityName(name)
     setCityName: {
-        validateParams: validateCityName,
-        createEvent: name => ({
+        validateParams: (libraryId, name) => validateCityName(name),
+        createEvent: (libraryId, name) => ({
             type: CITY_NAME_SET,
             payload: { name },
         }),
@@ -152,8 +152,8 @@ const commands = {
 
     // addBook(bookId)
     addBook: {
-        validateParams: validateBookId,
-        createEvent: bookId => ({
+        validateParams: (libraryId, bookId) => validateBookId(bookId),
+        createEvent: (libraryId, bookId) => ({
             type: BOOK_ADDED,
             payload: { bookId },
         }),
@@ -161,8 +161,8 @@ const commands = {
 
     // removeBook(bookId)
     removeBook: {
-        validateParams: validateBookId,
-        createEvent: bookId => ({
+        validateParams: (libraryId, bookId) => validateBookId(bookId),
+        createEvent: (libraryId, bookId) => ({
             type: BOOK_REMOVED,
             payload: { bookId },
         }),

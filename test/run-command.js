@@ -22,6 +22,13 @@ const { makeValidator } = require('../util');
 const libraryAggregate = require('./helpers/aggregates/library');
 const { users, getAuthorizer } = require('./helpers/authorizer');
 
+const cityIdValidator = makeValidator(
+    Joi.string()
+        .min(5)
+        .required(),
+    'cityId',
+);
+
 // An aggregate with some issues that we want to catch
 const brokenCityAggregate = {
     projection: {
@@ -37,12 +44,7 @@ const brokenCityAggregate = {
     commands: {
         create: {
             isCreateCommand: true,
-            validateParams: makeValidator(
-                Joi.string()
-                    .min(5)
-                    .required(),
-                'cityId',
-            ),
+            validateParams: cityId => cityIdValidator(cityId),
             createEvent: cityId => ({
                 type: 'CREATED',
                 payload: { cityId },

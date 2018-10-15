@@ -148,8 +148,8 @@ const runCommand = async args => {
         aggregateId,
     });
 
-    // For create commands, the parameters are just the aggregate id
-    const params = isCreateCommand ? [aggregateId] : commandParams;
+    // Params that are passed to validateParams() and createEvent()
+    const params = [aggregateId, ...commandParams];
 
     validateParams({
         runValidateParams,
