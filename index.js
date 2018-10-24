@@ -164,6 +164,8 @@ module.exports = class Hebo {
             defaultCommandRetries: this.defaultCommandRetries,
             notifier,
         });
-        return getAggregate(connectedAggregates);
+        return {
+            getAggregate: getAggregate(connectedAggregates),
+        };
     }
 };

@@ -85,7 +85,7 @@ const setupTest = () => {
     const snapshotRepository = makeSnapshotRepository();
     const authorizer = getAuthorizer(libraryId);
 
-    const getAggregate = hebo.connect({
+    const { getAggregate } = hebo.connect({
         eventRepository,
         snapshotRepository,
         notificationHandler,
@@ -473,9 +473,9 @@ test('authorization', async t => {
             user,
         });
 
-    const getAggregateSally = connect(users.superSally);
-    const getAggregateMary = connect(users.marySmith);
-    const getAggregateJohn = connect(users.johnDoe);
+    const { getAggregate: getAggregateSally } = connect(users.superSally);
+    const { getAggregate: getAggregateMary } = connect(users.marySmith);
+    const { getAggregate: getAggregateJohn } = connect(users.johnDoe);
 
     // marySmith had read-only privileges
     await t.throws(

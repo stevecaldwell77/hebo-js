@@ -117,7 +117,7 @@ test('getAggregate()', t => {
         },
     });
 
-    const getAggregate = hebo.connect({
+    const { getAggregate } = hebo.connect({
         eventRepository: new EventRepository({ aggregates: ['library'] }),
         snapshotRepository: new SnapshotRepository({ aggregates: ['library'] }),
         notificationHandler: new NotificationHandler(),

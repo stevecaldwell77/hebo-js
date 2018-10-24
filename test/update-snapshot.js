@@ -24,7 +24,7 @@ const setupTest = async (user = users.superSally) => {
     });
     const authorizer = getAuthorizer(libraryId);
 
-    const getAggregate = hebo.connect({
+    const { getAggregate } = hebo.connect({
         eventRepository,
         snapshotRepository,
         notificationHandler: new NotificationHandler(),

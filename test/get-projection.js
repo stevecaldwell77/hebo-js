@@ -60,7 +60,7 @@ const runGetProjection = async ({
     opts,
 }) => {
     const notificationHandler = new NotificationHandler();
-    const getAggregate = hebo.connect({
+    const { getAggregate } = hebo.connect({
         eventRepository,
         snapshotRepository,
         notificationHandler,

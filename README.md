@@ -49,7 +49,7 @@ const hebo = new Hebo({
 })
 
 // ... and then do this at runtime:
-const getAggregate = hebo.connect({
+const { getAggregate } = hebo.connect({
     eventRepository,
     snapshotRepository,
     notificationHandler,
