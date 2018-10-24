@@ -33,7 +33,7 @@ const getProjection = async ({
     aggregateId,
     isCreateCommand,
 }) => {
-    const projection = await runGetProjection(aggregateId, {
+    const projection = await runGetProjection(aggregateName, aggregateId, {
         missValue: 'newProjection',
     });
     const newProjection = projection.version === 0;

@@ -28,30 +28,14 @@ const createNotifier = notificationHandler => {
 // Hooks up aggregate code to readers/writers/notifiers
 const connectAggregate = ({
     eventRepository,
-    snapshotRepository,
     authorizer,
     user,
     notifier,
     defaultCommandRetries,
     aggregate,
     aggregateName,
+    getProjection,
 }) => ({
-    async getProjection(aggregateId, opts = {}) {
-        const projection = await getProjection({
-            aggregateName,
-            aggregateId,
-            initialState: aggregate.projection.initialState,
-            validateState: aggregate.projection.validateState,
-            applyEvent: aggregate.projection.applyEvent,
-            getSnapshot: snapshotRepository.getSnapshot,
-            getEvents: eventRepository.getEvents,
-            notifier,
-            assertAuthorized: authorizer.assert,
-            user,
-            missValue: opts.missValue,
-        });
-        return projection;
-    },
     async runCommand(commandName, aggregateId, ...commandParams) {
         const command = aggregate.commands[commandName];
         if (!command) {
@@ -70,7 +54,7 @@ const connectAggregate = ({
             commandParams,
             isCreateCommand,
             validateParams,
-            getProjection: this.getProjection.bind(this),
+            getProjection,
             initialState: aggregate.projection.initialState,
             createEvent,
             applyEvent: aggregate.projection.applyEvent,
@@ -87,23 +71,23 @@ const connectAggregate = ({
 // Hooks up aggregate code to readers/writers/notifiers
 const connectAggregates = ({
     eventRepository,
-    snapshotRepository,
     authorizer,
     user,
     notifier,
     aggregates,
     defaultCommandRetries,
+    getProjection,
 }) =>
     mapValues(aggregates, (aggregate, aggregateName) =>
         connectAggregate({
             eventRepository,
-            snapshotRepository,
             authorizer,
             user,
             notifier,
             defaultCommandRetries,
             aggregate,
             aggregateName,
+            getProjection,
         }),
     );
 
@@ -195,12 +179,6 @@ module.exports = class Hebo {
         Joi.assert(params, connectSchema, 'Invalid parameters to connect()');
         const { notificationHandler } = params;
         const notifier = createNotifier(notificationHandler);
-        const connectedAggregates = connectAggregates({
-            ...params,
-            aggregates: this.aggregates,
-            defaultCommandRetries: this.defaultCommandRetries,
-            notifier,
-        });
         const { aggregates } = this;
         const getProjection = makeGetProjection({
             ...params,
@@ -210,6 +188,13 @@ module.exports = class Hebo {
         const updateSnapshot = makeUpdateSnapshot({
             ...params,
             aggregates,
+            getProjection,
+        });
+        const connectedAggregates = connectAggregates({
+            ...params,
+            aggregates: this.aggregates,
+            defaultCommandRetries: this.defaultCommandRetries,
+            notifier,
             getProjection,
         });
         return {
