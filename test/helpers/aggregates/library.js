@@ -103,8 +103,8 @@ const validateState = state => {
 };
 
 const commands = {
-    // create(libraryId)
-    create: {
+    // createLibrary(libraryId)
+    createLibrary: {
         isCreateCommand: true,
         validateParams: libraryId => validateLibraryId(libraryId),
         createEvent: libraryId => ({
@@ -113,8 +113,8 @@ const commands = {
         }),
     },
 
-    // setName(name)
-    setName: {
+    // setLibraryName(name)
+    setLibraryName: {
         validateParams: (libraryId, name) => validateLibraryName(name),
         createEvent: (libraryId, name) => ({
             type: NAME_SET,
@@ -123,8 +123,8 @@ const commands = {
         retries: 3,
     },
 
-    // setCityName(name)
-    setCityName: {
+    // setLibraryCityName(name)
+    setLibraryCityName: {
         validateParams: (libraryId, name) => validateCityName(name),
         createEvent: (libraryId, name) => ({
             type: CITY_NAME_SET,
@@ -132,8 +132,8 @@ const commands = {
         }),
     },
 
-    // activate()
-    activate: {
+    // activateLibrary()
+    activateLibrary: {
         validateParams: noop,
         createEvent: () => ({
             type: ACTIVATED,
@@ -141,8 +141,8 @@ const commands = {
         }),
     },
 
-    // deactivate()
-    deactivate: {
+    // deactivateLibrary()
+    deactivateLibrary: {
         validateParams: noop,
         createEvent: () => ({
             type: DEACTIVATED,
@@ -150,8 +150,8 @@ const commands = {
         }),
     },
 
-    // addBook(bookId)
-    addBook: {
+    // addBookToLibrary(bookId)
+    addBookToLibrary: {
         validateParams: (libraryId, bookId) => validateBookId(bookId),
         createEvent: (libraryId, bookId) => ({
             type: BOOK_ADDED,
@@ -159,8 +159,8 @@ const commands = {
         }),
     },
 
-    // removeBook(bookId)
-    removeBook: {
+    // removeBookFromLibrary(bookId)
+    removeBookFromLibrary: {
         validateParams: (libraryId, bookId) => validateBookId(bookId),
         createEvent: (libraryId, bookId) => ({
             type: BOOK_REMOVED,

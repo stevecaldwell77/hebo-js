@@ -44,7 +44,7 @@ const isAuthorized = ({ operation, user, libraryId }) => {
             const isCreateCommand =
                 operation.type === 'runCommand' &&
                 operation.aggregateName === 'library' &&
-                operation.commandName === 'create';
+                operation.commandName === 'createLibrary';
             if (isCreateCommand) return false;
             return (
                 operation.aggregateName === 'library' &&

@@ -42,7 +42,7 @@ const brokenCityAggregate = {
         validateState: () => {},
     },
     commands: {
-        create: {
+        createBrokenCity: {
             isCreateCommand: true,
             validateParams: cityId => cityIdValidator(cityId),
             createEvent: cityId => ({
@@ -118,7 +118,7 @@ test('validateParams', async t => {
 
     // this should violate the 'name must be at least 4 chars' rule.
     await t.throws(
-        getAggregate('library').runCommand('setName', libraryId, 'a'),
+        getAggregate('library').runCommand('setLibraryName', libraryId, 'a'),
         InvalidCommandParamsError,
         'error thrown when validateParams fails',
     );
@@ -136,20 +136,24 @@ test('isCreateCommand', async t => {
     const { getAggregate, libraryId } = await setupTest();
 
     await t.throws(
-        getAggregate('library').runCommand('setName', libraryId, 'North'),
+        getAggregate('library').runCommand(
+            'setLibraryName',
+            libraryId,
+            'North',
+        ),
         AggregateNotFoundError,
         'error thrown when non-create command run and aggregate does not exist',
     );
 
     await t.notThrows(
-        getAggregate('library').runCommand('create', libraryId),
-        'can run create command when aggregate does not exist',
+        getAggregate('library').runCommand('createLibrary', libraryId),
+        'can run createLibrary command when aggregate does not exist',
     );
 
     await t.throws(
-        getAggregate('library').runCommand('create', libraryId),
+        getAggregate('library').runCommand('createLibrary', libraryId),
         DuplicateAggregateError,
-        'error thrown when create command run and aggregate already exists',
+        'error thrown when createLibrary command run and aggregate already exists',
     );
 });
 
@@ -160,7 +164,7 @@ test('createEvent generated invalid event', async t => {
 
     const cityId = shortid.generate();
 
-    await getAggregate('brokenCity').runCommand('create', cityId);
+    await getAggregate('brokenCity').runCommand('createBrokenCity', cityId);
 
     // This should trigger an event that is missing any data, which should be
     // flagged as an invalid event.
@@ -219,7 +223,7 @@ test('validateState throws error', async t => {
     // This violate's the library's invariant that an active library must have a
     // name.
     await t.throws(
-        getAggregate('library').runCommand('activate', libraryId),
+        getAggregate('library').runCommand('activateLibrary', libraryId),
         InvariantViolatedError,
         'error thrown when command creates an event that validateState rejects',
     );
@@ -247,9 +251,13 @@ test('retries - using defaultCommandRetries', async t => {
     const writeEvent = sinon.fake.resolves(false);
     sinon.replace(eventRepository, 'writeEvent', writeEvent);
 
-    // Note: setCityName has no specific retries value, so we should use default
+    // Note: setLibraryCityName has no specific retries value, so we should use default
     await t.throws(
-        getAggregate('library').runCommand('setCityName', libraryId, 'Encino'),
+        getAggregate('library').runCommand(
+            'setLibraryCityName',
+            libraryId,
+            'Encino',
+        ),
         MaxCommandAttemptsError,
         'error thrown when we reach max retries trying to write event',
     );
@@ -279,9 +287,13 @@ test('retries - command specific setting', async t => {
     const writeEvent = sinon.fake.resolves(false);
     sinon.replace(eventRepository, 'writeEvent', writeEvent);
 
-    // Note: setName has retries set to 3
+    // Note: setLibraryName has retries set to 3
     await t.throws(
-        getAggregate('library').runCommand('setName', libraryId, 'North'),
+        getAggregate('library').runCommand(
+            'setLibraryName',
+            libraryId,
+            'North',
+        ),
         MaxCommandAttemptsError,
         'error thrown when we reach max retries trying to write event',
     );
@@ -300,18 +312,26 @@ test('successful command', async t => {
     } = await setupTest();
 
     await t.notThrows(
-        getAggregate('library').runCommand('create', libraryId),
-        'able to run create',
+        getAggregate('library').runCommand('createLibrary', libraryId),
+        'able to run createLibrary',
     );
 
     await t.notThrows(
-        getAggregate('library').runCommand('setName', libraryId, 'North'),
-        'able to run setName',
+        getAggregate('library').runCommand(
+            'setLibraryName',
+            libraryId,
+            'North',
+        ),
+        'able to run setLibraryName',
     );
 
     await t.notThrows(
-        getAggregate('library').runCommand('setCityName', libraryId, 'Omaha'),
-        'able to run setCityName',
+        getAggregate('library').runCommand(
+            'setLibraryCityName',
+            libraryId,
+            'Omaha',
+        ),
+        'able to run setLibraryCityName',
     );
 
     const events = await eventRepository.getEvents('library', libraryId);
@@ -411,8 +431,8 @@ test('successful command, with retry', async t => {
     sinon.replace(eventRepository, 'writeEvent', writeEvent);
 
     await t.notThrows(
-        getAggregate('library').runCommand('create', libraryId),
-        'able to run create',
+        getAggregate('library').runCommand('createLibrary', libraryId),
+        'able to run createLibrary',
     );
 
     t.is(writeEvent.callCount, 3, 'writeEvent was retried');
@@ -479,40 +499,48 @@ test('authorization', async t => {
 
     // marySmith had read-only privileges
     await t.throws(
-        getAggregateMary('library').runCommand('create', libraryId1),
+        getAggregateMary('library').runCommand('createLibrary', libraryId1),
         UnauthorizedError,
-        'error thrown when marySmith tries to run library create',
+        'error thrown when marySmith tries to run createLibrary',
     );
 
     // johnDoe cannot run the create command on libraries
     await t.throws(
-        getAggregateJohn('library').runCommand('create', libraryId1),
+        getAggregateJohn('library').runCommand('createLibrary', libraryId1),
         UnauthorizedError,
-        'error thrown when johnDoe tries to run library create',
+        'error thrown when johnDoe tries to run createLibrary',
     );
 
     // superSally can do anything
     await t.notThrows(
-        getAggregateSally('library').runCommand('create', libraryId1),
-        'superSally is allowed to run library create',
+        getAggregateSally('library').runCommand('createLibrary', libraryId1),
+        'superSally is allowed to run createLibrary',
     );
 
     // johnDoe can set the library name on library1
     await t.notThrows(
-        getAggregateJohn('library').runCommand('setName', libraryId1, 'Smith'),
-        'johnDoe is allowed to run setName on the first library',
+        getAggregateJohn('library').runCommand(
+            'setLibraryName',
+            libraryId1,
+            'Smith',
+        ),
+        'johnDoe is allowed to run setLibraryName on the first library',
     );
 
     // Have superSally create a second library
     await t.notThrows(
-        getAggregateSally('library').runCommand('create', libraryId2),
-        'superSally is allowed to run library create',
+        getAggregateSally('library').runCommand('createLibrary', libraryId2),
+        'superSally is allowed to run createLibrary',
     );
 
     // johnDoe is not allowed to set the library name on library2
     await t.throws(
-        getAggregateJohn('library').runCommand('create', libraryId1),
+        getAggregateJohn('library').runCommand(
+            'setLibraryName',
+            libraryId2,
+            'Johnson',
+        ),
         UnauthorizedError,
-        'johnDoe is not allowed to run setName on the second library',
+        'johnDoe is not allowed to run setLibraryName on the second library',
     );
 });

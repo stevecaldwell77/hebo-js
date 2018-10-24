@@ -3,6 +3,7 @@ const forIn = require('lodash/forIn');
 const has = require('lodash/has');
 const mapValues = require('lodash/mapValues');
 const curry = require('lodash/fp/curry');
+const keys = require('lodash/fp/keys');
 const Joi = require('joi');
 const {
     eventRepositorySchema,
@@ -10,12 +11,31 @@ const {
     notificationHandlerSchema,
     authorizerSchema,
     validateAggregate,
+    InvalidCommandError,
     UnknownAggregateError,
     UnknownCommandError,
 } = require('hebo-validation');
 const getProjection = require('./get-projection');
 const updateSnapshot = require('./update-snapshot');
 const runCommand = require('./run-command');
+
+// validate aggregates input
+const validateAggregates = aggregates => {
+    forIn(aggregates, validateAggregate);
+    const commands = new Set();
+    forIn(aggregates, (aggregate, aggregateName) => {
+        keys(aggregate.commands).forEach(commandName => {
+            if (commands.has(commandName)) {
+                throw new InvalidCommandError(
+                    `duplicate command "${commandName}" found`,
+                    aggregateName,
+                    commandName,
+                );
+            }
+            commands.add(commandName);
+        });
+    });
+};
 
 // Creates an EventEmitter object and wires up listeners
 const createNotifier = notificationHandler => {
@@ -169,7 +189,7 @@ module.exports = class Hebo {
             heboSchema,
             'Invalid parameters in Hebo constructor',
         );
-        forIn(params.aggregates, validateAggregate);
+        validateAggregates(params.aggregates);
         this.aggregates = params.aggregates;
         this.defaultCommandRetries = params.defaultCommandRetries;
     }
