@@ -36,7 +36,7 @@ test('constructor()', t => {
     );
 });
 
-test('connect()', t => {
+test('connect() - parameters', t => {
     const hebo = new Hebo({
         aggregates: {
             library: libraryAggregate,
@@ -110,14 +110,14 @@ test('connect()', t => {
     );
 });
 
-test('getAggregate()', t => {
+test('connect() - results', t => {
     const hebo = new Hebo({
         aggregates: {
             library: libraryAggregate,
         },
     });
 
-    const { getAggregate } = hebo.connect({
+    const { getAggregate, getProjection } = hebo.connect({
         eventRepository: new EventRepository({ aggregates: ['library'] }),
         snapshotRepository: new SnapshotRepository({ aggregates: ['library'] }),
         notificationHandler: new NotificationHandler(),
@@ -125,11 +125,9 @@ test('getAggregate()', t => {
         user: users.superSally,
     });
 
+    t.true(isFunction(getProjection), 'returns a getProjection() function');
+
     const libraryAggregateInstance = getAggregate('library');
-    t.true(
-        isFunction(libraryAggregateInstance.getProjection),
-        'fetched aggregate instance has getProjection()',
-    );
     t.true(
         isFunction(libraryAggregateInstance.updateSnapshot),
         'fetched aggregate instance has updateSnapshot()',

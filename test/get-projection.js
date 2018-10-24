@@ -60,7 +60,7 @@ const runGetProjection = async ({
     opts,
 }) => {
     const notificationHandler = new NotificationHandler();
-    const { getAggregate } = hebo.connect({
+    const { getAggregate, getProjection } = hebo.connect({
         eventRepository,
         snapshotRepository,
         notificationHandler,
@@ -70,7 +70,7 @@ const runGetProjection = async ({
     const getSnapshotSpy = sinon.spy(snapshotRepository, 'getSnapshot');
     const getEventsSpy = sinon.spy(eventRepository, 'getEvents');
     const aggregate = getAggregate(aggregateName);
-    const projection = await aggregate.getProjection(aggregateId, opts);
+    const projection = await getProjection(aggregateName, aggregateId, opts);
     const updateSnapshot = () => aggregate.updateSnapshot(aggregateId);
     const getSnapshotCalls = getSnapshotSpy.getCalls().map(c => c.args);
     const getEventsCalls = getEventsSpy.getCalls().map(c => c.args);

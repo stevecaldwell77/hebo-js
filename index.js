@@ -125,6 +125,33 @@ const getAggregate = curry((aggregates, aggregateName) => {
     return aggregates[aggregateName];
 });
 
+const makeGetProjection = ({
+    aggregates,
+    eventRepository,
+    snapshotRepository,
+    authorizer,
+    user,
+    notifier,
+}) => (aggregateName, aggregateId, opts = {}) => {
+    if (!has(aggregates, aggregateName)) {
+        throw new UnknownAggregateError(aggregateName);
+    }
+    const aggregate = aggregates[aggregateName];
+    return getProjection({
+        aggregateName,
+        aggregateId,
+        initialState: aggregate.projection.initialState,
+        validateState: aggregate.projection.validateState,
+        applyEvent: aggregate.projection.applyEvent,
+        getSnapshot: snapshotRepository.getSnapshot,
+        getEvents: eventRepository.getEvents,
+        notifier,
+        assertAuthorized: authorizer.assert,
+        user,
+        missValue: opts.missValue,
+    });
+};
+
 const heboSchema = Joi.object().keys({
     aggregates: Joi.object().required(),
     defaultCommandRetries: Joi.number()
@@ -164,8 +191,14 @@ module.exports = class Hebo {
             defaultCommandRetries: this.defaultCommandRetries,
             notifier,
         });
+        const getProjection = makeGetProjection({
+            ...params,
+            aggregates: this.aggregates,
+            notifier,
+        });
         return {
             getAggregate: getAggregate(connectedAggregates),
+            getProjection,
         };
     }
 };
