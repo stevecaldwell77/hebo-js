@@ -1,5 +1,6 @@
 const test = require('ava');
 const { isFunction, omit } = require('lodash');
+const shortid = require('shortid');
 const EventRepository = require('hebo-event-repository-inmemory');
 const SnapshotRepository = require('hebo-snapshot-repository-inmemory');
 const NotificationHandler = require('hebo-notification-handler-inmemory');
@@ -110,14 +111,14 @@ test('connect() - parameters', t => {
     );
 });
 
-test('connect() - results', t => {
+test('connect() - results', async t => {
     const hebo = new Hebo({
         aggregates: {
             library: libraryAggregate,
         },
     });
 
-    const { getAggregate, getProjection } = hebo.connect({
+    const { getAggregate, getProjection, updateSnapshot } = hebo.connect({
         eventRepository: new EventRepository({ aggregates: ['library'] }),
         snapshotRepository: new SnapshotRepository({ aggregates: ['library'] }),
         notificationHandler: new NotificationHandler(),
@@ -126,16 +127,23 @@ test('connect() - results', t => {
     });
 
     t.true(isFunction(getProjection), 'returns a getProjection() function');
+    t.true(isFunction(updateSnapshot), 'returns an updateSnapshot() function');
+
+    await t.throws(
+        () => getProjection('players', shortid.generate()),
+        UnknownAggregateError,
+        'getProjection() throws correct error on unknown aggregate',
+    );
+
+    await t.throws(
+        () => updateSnapshot('players', shortid.generate()),
+        UnknownAggregateError,
+        'updateSnapshot() throws correct error on unknown aggregate',
+    );
 
     const libraryAggregateInstance = getAggregate('library');
     t.true(
-        isFunction(libraryAggregateInstance.updateSnapshot),
-        'fetched aggregate instance has updateSnapshot()',
-    );
-
-    t.throws(
-        () => getAggregate('players'),
-        UnknownAggregateError,
-        'throws correct error on unknown aggregate',
+        isFunction(libraryAggregateInstance.runCommand),
+        'fetched aggregate instance has runCommand()',
     );
 });

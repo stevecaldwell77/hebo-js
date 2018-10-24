@@ -60,7 +60,7 @@ const runGetProjection = async ({
     opts,
 }) => {
     const notificationHandler = new NotificationHandler();
-    const { getAggregate, getProjection } = hebo.connect({
+    const { getProjection, updateSnapshot } = hebo.connect({
         eventRepository,
         snapshotRepository,
         notificationHandler,
@@ -69,9 +69,7 @@ const runGetProjection = async ({
     });
     const getSnapshotSpy = sinon.spy(snapshotRepository, 'getSnapshot');
     const getEventsSpy = sinon.spy(eventRepository, 'getEvents');
-    const aggregate = getAggregate(aggregateName);
     const projection = await getProjection(aggregateName, aggregateId, opts);
-    const updateSnapshot = () => aggregate.updateSnapshot(aggregateId);
     const getSnapshotCalls = getSnapshotSpy.getCalls().map(c => c.args);
     const getEventsCalls = getEventsSpy.getCalls().map(c => c.args);
     getSnapshotSpy.restore();
@@ -239,7 +237,7 @@ test('aggregate with snapshots', async t => {
         snapshotRepository,
         authorizer,
     });
-    await updateSnapshot();
+    await updateSnapshot('library', libraryId);
 
     // OK, now our snapshot repo has a projection at version 2
     // Test that calling getProjection() works again, but uses snapshot.
@@ -446,7 +444,7 @@ test('handing bad events', async t => {
 
     // Snapshot our projection, to make sure that invalid events are retrieved
     // correctly below.
-    await updateSnapshot();
+    await updateSnapshot('library', libraryId);
 
     // Now create 2 events that resolve the 3 issues.
     const resolvingEvent1 = {

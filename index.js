@@ -52,16 +52,6 @@ const connectAggregate = ({
         });
         return projection;
     },
-    async updateSnapshot(aggregateId) {
-        await updateSnapshot({
-            aggregateName,
-            aggregateId,
-            getProjection: this.getProjection.bind(this),
-            writeSnapshot: snapshotRepository.writeSnapshot,
-            assertAuthorized: authorizer.assert,
-            user,
-        });
-    },
     async runCommand(commandName, aggregateId, ...commandParams) {
         const command = aggregate.commands[commandName];
         if (!command) {
@@ -152,6 +142,26 @@ const makeGetProjection = ({
     });
 };
 
+const makeUpdateSnapshot = ({
+    aggregates,
+    snapshotRepository,
+    authorizer,
+    user,
+    getProjection,
+}) => (aggregateName, aggregateId) => {
+    if (!has(aggregates, aggregateName)) {
+        throw new UnknownAggregateError(aggregateName);
+    }
+    return updateSnapshot({
+        aggregateName,
+        aggregateId,
+        getProjection,
+        writeSnapshot: snapshotRepository.writeSnapshot,
+        assertAuthorized: authorizer.assert,
+        user,
+    });
+};
+
 const heboSchema = Joi.object().keys({
     aggregates: Joi.object().required(),
     defaultCommandRetries: Joi.number()
@@ -191,14 +201,21 @@ module.exports = class Hebo {
             defaultCommandRetries: this.defaultCommandRetries,
             notifier,
         });
+        const { aggregates } = this;
         const getProjection = makeGetProjection({
             ...params,
-            aggregates: this.aggregates,
+            aggregates,
             notifier,
+        });
+        const updateSnapshot = makeUpdateSnapshot({
+            ...params,
+            aggregates,
+            getProjection,
         });
         return {
             getAggregate: getAggregate(connectedAggregates),
             getProjection,
+            updateSnapshot,
         };
     }
 };

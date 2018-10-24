@@ -49,7 +49,7 @@ const hebo = new Hebo({
 })
 
 // ... and then do this at runtime:
-const { getAggregate } = hebo.connect({
+const { getAggregate, getProjection, updateSnapshot } = hebo.connect({
     eventRepository,
     snapshotRepository,
     notificationHandler,
@@ -60,9 +60,9 @@ const { getAggregate } = hebo.connect({
 await getAggregate('library').runCommand('create', 1234);
 await getAggregate('library').runCommand('setName', 1234, 'North Branch');
 
-const library = getAggregate('library').getProjection(1234);
+const library = getProjection('library', 1234);
 
-await getAggregate('library').updateSnapshot(1234);
+await updateSnapshot('library', 1234);
 ```
 
 

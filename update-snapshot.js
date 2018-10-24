@@ -13,6 +13,6 @@ module.exports = async ({
         aggregateId,
     });
 
-    const projection = await getProjection(aggregateId);
+    const projection = await getProjection(aggregateName, aggregateId);
     await writeSnapshot(aggregateName, aggregateId, projection);
 };

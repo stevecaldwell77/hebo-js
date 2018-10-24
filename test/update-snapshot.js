@@ -24,7 +24,7 @@ const setupTest = async (user = users.superSally) => {
     });
     const authorizer = getAuthorizer(libraryId);
 
-    const { getAggregate } = hebo.connect({
+    const { updateSnapshot } = hebo.connect({
         eventRepository,
         snapshotRepository,
         notificationHandler: new NotificationHandler(),
@@ -46,7 +46,7 @@ const setupTest = async (user = users.superSally) => {
 
     return {
         libraryId,
-        getAggregate,
+        updateSnapshot,
         eventRepository,
         snapshotRepository,
     };
@@ -54,7 +54,7 @@ const setupTest = async (user = users.superSally) => {
 
 test('updateSnapshot() writes snapshot correctly', async t => {
     const {
-        getAggregate,
+        updateSnapshot,
         libraryId,
         eventRepository,
         snapshotRepository,
@@ -75,7 +75,7 @@ test('updateSnapshot() writes snapshot correctly', async t => {
         version: 1,
     };
 
-    await getAggregate('library').updateSnapshot(libraryId);
+    await updateSnapshot('library', libraryId);
 
     t.is(writeSnapshotSpy.callCount, 1, 'writeSnapshot() called');
     t.deepEqual(
@@ -120,7 +120,7 @@ test('updateSnapshot() writes snapshot correctly', async t => {
         version: 2,
     };
 
-    await getAggregate('library').updateSnapshot(libraryId);
+    await updateSnapshot('library', libraryId);
 
     const snapshot2 = await snapshotRepository.getSnapshot(
         'library',
@@ -135,17 +135,17 @@ test('updateSnapshot() writes snapshot correctly', async t => {
 });
 
 test('authorization - valid user allowed', async t => {
-    const { getAggregate, libraryId } = await setupTest(users.johnDoe);
+    const { updateSnapshot, libraryId } = await setupTest(users.johnDoe);
     await t.notThrows(
-        getAggregate('library').updateSnapshot(libraryId),
+        updateSnapshot('library', libraryId),
         'no error thrown when user has privileges on aggregate',
     );
 });
 
 test('authorization - invalid user throws error', async t => {
-    const { getAggregate, libraryId } = await setupTest(users.marySmith);
+    const { updateSnapshot, libraryId } = await setupTest(users.marySmith);
     await t.throws(
-        getAggregate('library').updateSnapshot(libraryId),
+        updateSnapshot('library', libraryId),
         UnauthorizedError,
         'error thrown when user does not have privileges',
     );
