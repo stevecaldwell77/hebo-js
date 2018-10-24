@@ -5,7 +5,10 @@ const sinon = require('sinon');
 const EventRepository = require('hebo-event-repository-inmemory');
 const SnapshotRepository = require('hebo-snapshot-repository-inmemory');
 const NotificationHandler = require('hebo-notification-handler-inmemory');
-const { UnauthorizedError } = require('hebo-validation');
+const {
+    UnauthorizedError,
+    AggregateNotFoundError,
+} = require('hebo-validation');
 const Hebo = require('..');
 const libraryAggregate = require('./helpers/aggregates/library');
 const { users, getAuthorizer } = require('./helpers/authorizer');
@@ -131,6 +134,16 @@ test('updateSnapshot() writes snapshot correctly', async t => {
         snapshot2,
         expectedProjection2,
         'after new event, snapshotted projection is expected',
+    );
+});
+
+test('updateSnapshot() throws error on missing projection', async t => {
+    const { updateSnapshot } = await setupTest();
+
+    await t.throws(
+        updateSnapshot('library', shortid.generate()),
+        AggregateNotFoundError,
+        'error thrown on unknown aggregate',
     );
 });
 

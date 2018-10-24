@@ -1,3 +1,5 @@
+const { AggregateNotFoundError } = require('hebo-validation');
+
 module.exports = async ({
     aggregateName,
     aggregateId,
@@ -14,5 +16,8 @@ module.exports = async ({
     });
 
     const projection = await getProjection(aggregateName, aggregateId);
+    if (!projection)
+        throw new AggregateNotFoundError(aggregateName, aggregateId);
+
     await writeSnapshot(aggregateName, aggregateId, projection);
 };
