@@ -3097,6 +3097,14 @@ hebo-validation@^3.0.0:
     joi "^13.7.0"
     lodash "^4.17.11"
 
+hebo-validation@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/hebo-validation/-/hebo-validation-3.1.0.tgz#9b3a5fb02df3847c93647c5524f43a12d6eec374"
+  integrity sha512-XsbnhoUtFXXp6Vrf+h6rB7YgmJfdzd+fRBLj032YC0xmm63nidWN1emNSaZqMFPjnBGSI9tbVKDPtxgmtztDwA==
+  dependencies:
+    joi "^13.7.0"
+    lodash "^4.17.11"
+
 hebo@^0.3.3:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/hebo/-/hebo-0.3.3.tgz#5cd273779477092a88033fec93b6debd217726e5"
