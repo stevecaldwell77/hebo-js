@@ -153,6 +153,7 @@ test('connect() - results', async t => {
 
 test('connect() - duplicate commands', t => {
     const otherAggregate = {
+        idField: 'otherId',
         projection: {
             initialState: noop,
             applyEvent: noop,

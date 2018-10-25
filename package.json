@@ -20,7 +20,7 @@
     "Steve Caldwell <scaldwell@gmail.com>"
   ],
   "dependencies": {
-    "hebo-validation": "^3.1.0",
+    "hebo-validation": "^4.0.0",
     "immer": "^1.7.2",
     "joi": "^13.6.0",
     "lodash": "^4.17.11",

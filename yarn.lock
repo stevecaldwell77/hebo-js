@@ -3097,10 +3097,10 @@ hebo-validation@^3.0.0:
     joi "^13.7.0"
     lodash "^4.17.11"
 
-hebo-validation@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/hebo-validation/-/hebo-validation-3.1.0.tgz#9b3a5fb02df3847c93647c5524f43a12d6eec374"
-  integrity sha512-XsbnhoUtFXXp6Vrf+h6rB7YgmJfdzd+fRBLj032YC0xmm63nidWN1emNSaZqMFPjnBGSI9tbVKDPtxgmtztDwA==
+hebo-validation@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/hebo-validation/-/hebo-validation-4.0.0.tgz#718d876a36709ca5a4ef6f21960d35d4b5eec1e1"
+  integrity sha512-ThrRDX4bSMZCMpc5qWnfZV3PUUlzexOVMCL4nVpYInEzCRWpHHvyAqqhvibM9CUUCsB6m1VoL1ZkM0SkCFBpNw==
   dependencies:
     joi "^13.7.0"
     lodash "^4.17.11"
