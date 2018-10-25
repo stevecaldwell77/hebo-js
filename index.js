@@ -1,9 +1,7 @@
 const EventEmitter = require('events');
 const forIn = require('lodash/forIn');
 const has = require('lodash/has');
-const mapValues = require('lodash/mapValues');
 const compose = require('lodash/fp/compose');
-const curry = require('lodash/fp/curry');
 const flatten = require('lodash/fp/flatten');
 const fromPairs = require('lodash/fp/fromPairs');
 const keys = require('lodash/fp/keys');
@@ -62,80 +60,6 @@ const createNotifier = notificationHandler => {
     notifier.on('eventWritten', notificationHandler.eventWritten);
     return notifier;
 };
-
-// Hooks up aggregate code to readers/writers/notifiers
-const connectAggregate = ({
-    eventRepository,
-    authorizer,
-    user,
-    notifier,
-    defaultCommandRetries,
-    aggregate,
-    aggregateName,
-    getProjection,
-}) => ({
-    async runCommand(commandName, aggregateId, ...commandParams) {
-        const command = aggregate.commands[commandName];
-        if (!command) {
-            throw new UnknownCommandError(aggregateName, commandName);
-        }
-        const {
-            createEvent,
-            isCreateCommand = false,
-            retries = defaultCommandRetries,
-            validateParams,
-        } = command;
-        await runCommand({
-            aggregateName,
-            aggregateId,
-            commandName,
-            commandParams,
-            isCreateCommand,
-            validateParams,
-            getProjection,
-            initialState: aggregate.projection.initialState,
-            createEvent,
-            applyEvent: aggregate.projection.applyEvent,
-            validateState: aggregate.projection.validateState,
-            writeEvent: eventRepository.writeEvent,
-            retries,
-            notifier,
-            assertAuthorized: authorizer.assert,
-            user,
-        });
-    },
-});
-
-// Hooks up aggregate code to readers/writers/notifiers
-const connectAggregates = ({
-    eventRepository,
-    authorizer,
-    user,
-    notifier,
-    aggregates,
-    defaultCommandRetries,
-    getProjection,
-}) =>
-    mapValues(aggregates, (aggregate, aggregateName) =>
-        connectAggregate({
-            eventRepository,
-            authorizer,
-            user,
-            notifier,
-            defaultCommandRetries,
-            aggregate,
-            aggregateName,
-            getProjection,
-        }),
-    );
-
-// Curried getAggregate() function that throws error if the key doesn't exist.
-const getAggregate = curry((aggregates, aggregateName) => {
-    if (!has(aggregates, aggregateName)) {
-        throw new UnknownAggregateError(aggregateName);
-    }
-    return aggregates[aggregateName];
-});
 
 const makeGetProjection = ({
     aggregates,
@@ -285,15 +209,7 @@ module.exports = class Hebo {
             commandAggregate: this.commandAggregate,
             defaultRetries: this.defaultCommandRetries,
         });
-        const connectedAggregates = connectAggregates({
-            ...params,
-            aggregates: this.aggregates,
-            defaultCommandRetries: this.defaultCommandRetries,
-            notifier,
-            getProjection,
-        });
         return {
-            getAggregate: getAggregate(connectedAggregates),
             getProjection,
             updateSnapshot,
             runCommand,
