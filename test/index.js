@@ -1,5 +1,5 @@
 const test = require('ava');
-const { isFunction, omit } = require('lodash');
+const { isFunction, omit, noop } = require('lodash');
 const shortid = require('shortid');
 const EventRepository = require('hebo-event-repository-inmemory');
 const SnapshotRepository = require('hebo-snapshot-repository-inmemory');
@@ -7,6 +7,7 @@ const NotificationHandler = require('hebo-notification-handler-inmemory');
 const Hebo = require('..');
 const {
     InvalidAggregateError,
+    InvalidCommandError,
     UnknownAggregateError,
     UnknownCommandError,
 } = require('hebo-validation');
@@ -148,4 +149,38 @@ test('connect() - results', async t => {
         UnknownCommandError,
         'runCommand() throws correct error on unknown aggregate',
     );
+});
+
+test('connect() - duplicate commands', t => {
+    const otherAggregate = {
+        projection: {
+            initialState: noop,
+            applyEvent: noop,
+            validateState: noop,
+        },
+        commands: {
+            createLibrary: {
+                validateParams: noop,
+                createEvent: noop,
+            },
+        },
+    };
+
+    const err = t.throws(
+        () =>
+            new Hebo({
+                aggregates: {
+                    library: libraryAggregate,
+                    other: otherAggregate,
+                },
+            }),
+        InvalidCommandError,
+        'error thrown on duplicate command name',
+    );
+    t.regex(
+        err.message,
+        /duplicate command "createLibrary" found/,
+        'err has correct message',
+    );
+    t.is(err.commandName, 'createLibrary', 'err has correct commandName');
 });
