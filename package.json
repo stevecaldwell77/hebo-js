@@ -1,7 +1,7 @@
 {
   "name": "hebo",
   "description": "Simple CQRS / Event Sourcing Container",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "author": "Steve Caldwell <scaldwell@gmail.com>",
   "ava": {
     "failFast": true,
