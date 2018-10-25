@@ -126,12 +126,12 @@ const makeGetProjection = ({
     authorizer,
     user,
     notifier,
-}) => (aggregateName, aggregateId, opts = {}) => {
+}) => async (aggregateName, aggregateId, opts = {}) => {
     if (!has(aggregates, aggregateName)) {
         throw new UnknownAggregateError(aggregateName);
     }
     const aggregate = aggregates[aggregateName];
-    return getProjection({
+    const result = await getProjection({
         aggregateName,
         aggregateId,
         initialState: aggregate.projection.initialState,
@@ -144,6 +144,7 @@ const makeGetProjection = ({
         user,
         missValue: opts.missValue,
     });
+    return result;
 };
 
 const makeUpdateSnapshot = ({
@@ -152,11 +153,11 @@ const makeUpdateSnapshot = ({
     authorizer,
     user,
     getProjection,
-}) => (aggregateName, aggregateId) => {
+}) => async (aggregateName, aggregateId) => {
     if (!has(aggregates, aggregateName)) {
         throw new UnknownAggregateError(aggregateName);
     }
-    return updateSnapshot({
+    const result = await updateSnapshot({
         aggregateName,
         aggregateId,
         getProjection,
@@ -164,6 +165,7 @@ const makeUpdateSnapshot = ({
         assertAuthorized: authorizer.assert,
         user,
     });
+    return result;
 };
 
 const heboSchema = Joi.object().keys({

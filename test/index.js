@@ -130,13 +130,13 @@ test('connect() - results', async t => {
     t.true(isFunction(updateSnapshot), 'returns an updateSnapshot() function');
 
     await t.throws(
-        () => getProjection('players', shortid.generate()),
+        getProjection('players', shortid.generate()),
         UnknownAggregateError,
         'getProjection() throws correct error on unknown aggregate',
     );
 
     await t.throws(
-        () => updateSnapshot('players', shortid.generate()),
+        updateSnapshot('players', shortid.generate()),
         UnknownAggregateError,
         'updateSnapshot() throws correct error on unknown aggregate',
     );
