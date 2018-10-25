@@ -15,7 +15,7 @@ const validateParams = ({
     commandName,
 }) => {
     try {
-        runValidateParams(...params);
+        runValidateParams(params);
     } catch (err) {
         throw new InvalidCommandParamsError(
             err.message,
@@ -54,7 +54,7 @@ const createEvent = ({
     user,
     sequenceNumber,
 }) => {
-    const eventDetails = runCreateEvent(...params);
+    const eventDetails = runCreateEvent(params);
     return {
         aggregateName,
         aggregateId,
@@ -120,7 +120,7 @@ const runCommand = async args => {
         aggregateName,
         aggregateId,
         commandName,
-        commandParams,
+        params,
         isCreateCommand,
         validateParams: runValidateParams,
         getProjection: runGetProjection,
@@ -147,9 +147,6 @@ const runCommand = async args => {
         aggregateName,
         aggregateId,
     });
-
-    // Params that are passed to validateParams() and createEvent()
-    const params = [aggregateId, ...commandParams];
 
     validateParams({
         runValidateParams,

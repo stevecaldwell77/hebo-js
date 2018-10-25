@@ -35,14 +35,14 @@ const validateLibraryName = makeValidator(
     Joi.string()
         .min(4)
         .required(),
-    'libraryName',
+    'name',
 );
 
 const validateCityName = makeValidator(
     Joi.string()
         .min(4)
         .required(),
-    'cityName',
+    'name',
 );
 
 const validateBookId = makeValidator(
@@ -103,30 +103,30 @@ const validateState = state => {
 };
 
 const commands = {
-    // createLibrary(libraryId)
+    // createLibrary({ libraryId })
     createLibrary: {
         isCreateCommand: true,
-        validateParams: libraryId => validateLibraryId(libraryId),
-        createEvent: libraryId => ({
+        validateParams: ({ libraryId }) => validateLibraryId(libraryId),
+        createEvent: ({ libraryId }) => ({
             type: CREATED,
             payload: { libraryId },
         }),
     },
 
-    // setLibraryName(name)
+    // setLibraryName({ name })
     setLibraryName: {
-        validateParams: (libraryId, name) => validateLibraryName(name),
-        createEvent: (libraryId, name) => ({
+        validateParams: ({ name }) => validateLibraryName(name),
+        createEvent: ({ name }) => ({
             type: NAME_SET,
             payload: { name },
         }),
         retries: 3,
     },
 
-    // setLibraryCityName(name)
+    // setLibraryCityName({ name })
     setLibraryCityName: {
-        validateParams: (libraryId, name) => validateCityName(name),
-        createEvent: (libraryId, name) => ({
+        validateParams: ({ name }) => validateCityName(name),
+        createEvent: ({ name }) => ({
             type: CITY_NAME_SET,
             payload: { name },
         }),
@@ -150,19 +150,19 @@ const commands = {
         }),
     },
 
-    // addBookToLibrary(bookId)
+    // addBookToLibrary({ bookId })
     addBookToLibrary: {
-        validateParams: (libraryId, bookId) => validateBookId(bookId),
-        createEvent: (libraryId, bookId) => ({
+        validateParams: ({ bookId }) => validateBookId(bookId),
+        createEvent: ({ bookId }) => ({
             type: BOOK_ADDED,
             payload: { bookId },
         }),
     },
 
-    // removeBookFromLibrary(bookId)
+    // removeBookFromLibrary({ bookId })
     removeBookFromLibrary: {
-        validateParams: (libraryId, bookId) => validateBookId(bookId),
-        createEvent: (libraryId, bookId) => ({
+        validateParams: ({ bookId }) => validateBookId(bookId),
+        createEvent: ({ bookId }) => ({
             type: BOOK_REMOVED,
             payload: { bookId },
         }),
@@ -170,6 +170,7 @@ const commands = {
 };
 
 module.exports = {
+    idField: 'libraryId',
     projection: {
         initialState,
         applyEvent,

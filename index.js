@@ -1,5 +1,6 @@
 const EventEmitter = require('events');
 const forIn = require('lodash/forIn');
+const isNil = require('lodash/isNil');
 const has = require('lodash/has');
 const compose = require('lodash/fp/compose');
 const flatten = require('lodash/fp/flatten');
@@ -15,6 +16,7 @@ const {
     authorizerSchema,
     validateAggregate,
     InvalidCommandError,
+    InvalidCommandParamsError,
     UnknownAggregateError,
     UnknownCommandError,
 } = require('hebo-validation');
@@ -119,15 +121,25 @@ const makeRunCommand = ({
     getProjection,
     commandAggregate,
     defaultRetries,
-}) => async (commandName, aggregateId, ...commandParams) => {
+}) => async (commandName, params) => {
     const aggregateName = commandAggregate[commandName];
     if (!aggregateName) {
         throw new UnknownCommandError('UNKNOWN', commandName);
     }
 
     const aggregate = aggregates[aggregateName];
-    const command = aggregate.commands[commandName];
+    const { idField, commands } = aggregate;
 
+    const aggregateId = params[idField];
+    if (isNil(aggregateId)) {
+        throw new InvalidCommandParamsError(
+            `missing ${idField}`,
+            aggregateName,
+            commandName,
+        );
+    }
+
+    const command = commands[commandName];
     const {
         createEvent,
         isCreateCommand = false,
@@ -139,7 +151,7 @@ const makeRunCommand = ({
         aggregateName,
         aggregateId,
         commandName,
-        commandParams,
+        params,
         isCreateCommand,
         validateParams,
         getProjection,
