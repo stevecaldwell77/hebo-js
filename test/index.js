@@ -8,6 +8,7 @@ const Hebo = require('..');
 const {
     InvalidAggregateError,
     UnknownAggregateError,
+    UnknownCommandError,
 } = require('hebo-validation');
 const libraryAggregate = require('./helpers/aggregates/library');
 const { users, getAuthorizer } = require('./helpers/authorizer');
@@ -118,7 +119,7 @@ test('connect() - results', async t => {
         },
     });
 
-    const { getAggregate, getProjection, updateSnapshot } = hebo.connect({
+    const { getProjection, updateSnapshot, runCommand } = hebo.connect({
         eventRepository: new EventRepository({ aggregates: ['library'] }),
         snapshotRepository: new SnapshotRepository({ aggregates: ['library'] }),
         notificationHandler: new NotificationHandler(),
@@ -128,6 +129,7 @@ test('connect() - results', async t => {
 
     t.true(isFunction(getProjection), 'returns a getProjection() function');
     t.true(isFunction(updateSnapshot), 'returns an updateSnapshot() function');
+    t.true(isFunction(runCommand), 'returns an runCommand() function');
 
     await t.throws(
         getProjection('players', shortid.generate()),
@@ -141,9 +143,9 @@ test('connect() - results', async t => {
         'updateSnapshot() throws correct error on unknown aggregate',
     );
 
-    const libraryAggregateInstance = getAggregate('library');
-    t.true(
-        isFunction(libraryAggregateInstance.runCommand),
-        'fetched aggregate instance has runCommand()',
+    await t.throws(
+        runCommand('notAKnownCommand', shortid.generate()),
+        UnknownCommandError,
+        'runCommand() throws correct error on unknown aggregate',
     );
 });

@@ -2,8 +2,13 @@ const EventEmitter = require('events');
 const forIn = require('lodash/forIn');
 const has = require('lodash/has');
 const mapValues = require('lodash/mapValues');
+const compose = require('lodash/fp/compose');
 const curry = require('lodash/fp/curry');
+const flatten = require('lodash/fp/flatten');
+const fromPairs = require('lodash/fp/fromPairs');
 const keys = require('lodash/fp/keys');
+const map = require('lodash/fp/map');
+const toPairs = require('lodash/fp/toPairs');
 const Joi = require('joi');
 const {
     eventRepositorySchema,
@@ -36,6 +41,19 @@ const validateAggregates = aggregates => {
         });
     });
 };
+
+// Build object that maps a command name to its aggregate name
+const mapCommandsToAggregates = compose(
+    fromPairs,
+    flatten,
+    map(([aggregateName, aggregate]) =>
+        keys(aggregate.commands).map(commandName => [
+            commandName,
+            aggregateName,
+        ]),
+    ),
+    toPairs,
+);
 
 // Creates an EventEmitter object and wires up listeners
 const createNotifier = notificationHandler => {
@@ -168,6 +186,52 @@ const makeUpdateSnapshot = ({
     return result;
 };
 
+const makeRunCommand = ({
+    aggregates,
+    eventRepository,
+    notifier,
+    authorizer,
+    user,
+    getProjection,
+    commandAggregate,
+    defaultRetries,
+}) => async (commandName, aggregateId, ...commandParams) => {
+    const aggregateName = commandAggregate[commandName];
+    if (!aggregateName) {
+        throw new UnknownCommandError('UNKNOWN', commandName);
+    }
+
+    const aggregate = aggregates[aggregateName];
+    const command = aggregate.commands[commandName];
+
+    const {
+        createEvent,
+        isCreateCommand = false,
+        retries = defaultRetries,
+        validateParams,
+    } = command;
+
+    const result = await runCommand({
+        aggregateName,
+        aggregateId,
+        commandName,
+        commandParams,
+        isCreateCommand,
+        validateParams,
+        getProjection,
+        initialState: aggregate.projection.initialState,
+        createEvent,
+        applyEvent: aggregate.projection.applyEvent,
+        validateState: aggregate.projection.validateState,
+        writeEvent: eventRepository.writeEvent,
+        retries,
+        notifier,
+        assertAuthorized: authorizer.assert,
+        user,
+    });
+    return result;
+};
+
 const heboSchema = Joi.object().keys({
     aggregates: Joi.object().required(),
     defaultCommandRetries: Joi.number()
@@ -193,6 +257,7 @@ module.exports = class Hebo {
         );
         validateAggregates(params.aggregates);
         this.aggregates = params.aggregates;
+        this.commandAggregate = mapCommandsToAggregates(this.aggregates);
         this.defaultCommandRetries = params.defaultCommandRetries;
     }
 
@@ -212,6 +277,14 @@ module.exports = class Hebo {
             aggregates,
             getProjection,
         });
+        const runCommand = makeRunCommand({
+            ...params,
+            aggregates,
+            notifier,
+            getProjection,
+            commandAggregate: this.commandAggregate,
+            defaultRetries: this.defaultCommandRetries,
+        });
         const connectedAggregates = connectAggregates({
             ...params,
             aggregates: this.aggregates,
@@ -223,6 +296,7 @@ module.exports = class Hebo {
             getAggregate: getAggregate(connectedAggregates),
             getProjection,
             updateSnapshot,
+            runCommand,
         };
     }
 };
