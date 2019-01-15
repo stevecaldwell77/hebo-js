@@ -140,7 +140,7 @@ test('updateSnapshot() writes snapshot correctly', async t => {
 test('updateSnapshot() throws error on missing projection', async t => {
     const { updateSnapshot } = await setupTest();
 
-    await t.throws(
+    await t.throwsAsync(
         updateSnapshot('library', shortid.generate()),
         AggregateNotFoundError,
         'error thrown on unknown aggregate',
@@ -149,7 +149,7 @@ test('updateSnapshot() throws error on missing projection', async t => {
 
 test('authorization - valid user allowed', async t => {
     const { updateSnapshot, libraryId } = await setupTest(users.johnDoe);
-    await t.notThrows(
+    await t.notThrowsAsync(
         updateSnapshot('library', libraryId),
         'no error thrown when user has privileges on aggregate',
     );
@@ -157,7 +157,7 @@ test('authorization - valid user allowed', async t => {
 
 test('authorization - invalid user throws error', async t => {
     const { updateSnapshot, libraryId } = await setupTest(users.marySmith);
-    await t.throws(
+    await t.throwsAsync(
         updateSnapshot('library', libraryId),
         UnauthorizedError,
         'error thrown when user does not have privileges',

@@ -106,7 +106,7 @@ const setupTest = () => {
 test('unknown command', async t => {
     const { runCommand } = await setupTest();
 
-    await t.throws(
+    await t.throwsAsync(
         runCommand('thisIsNotValid'),
         UnknownCommandError,
         'error thrown when runCommand called with unknown command name',
@@ -118,7 +118,7 @@ test('unknown command', async t => {
 test('missing aggregateId', async t => {
     const { runCommand } = await setupTest();
 
-    await t.throws(
+    await t.throwsAsync(
         runCommand('setLibraryName', { name: 'a' }),
         InvalidCommandParamsError,
         'error thrown when runCommand called without aggregate id in args',
@@ -130,7 +130,7 @@ test('validateParams', async t => {
     const { runCommand, libraryId, eventRepository } = await setupTest();
 
     // this should violate the 'name must be at least 4 chars' rule.
-    await t.throws(
+    await t.throwsAsync(
         runCommand('setLibraryName', { libraryId, name: 'a' }),
         InvalidCommandParamsError,
         'error thrown when validateParams fails',
@@ -148,18 +148,18 @@ test('validateParams', async t => {
 test('isCreateCommand', async t => {
     const { runCommand, libraryId } = await setupTest();
 
-    await t.throws(
+    await t.throwsAsync(
         runCommand('setLibraryName', { libraryId, name: 'North' }),
         AggregateNotFoundError,
         'error thrown when non-create command run and aggregate does not exist',
     );
 
-    await t.notThrows(
+    await t.notThrowsAsync(
         runCommand('createLibrary', { libraryId }),
         'can run createLibrary command when aggregate does not exist',
     );
 
-    await t.throws(
+    await t.throwsAsync(
         runCommand('createLibrary', { libraryId }),
         DuplicateAggregateError,
         'error thrown when createLibrary command run and aggregate already exists',
@@ -177,7 +177,7 @@ test('createEvent generated invalid event', async t => {
 
     // This should trigger an event that is missing any data, which should be
     // flagged as an invalid event.
-    await t.throws(
+    await t.throwsAsync(
         runCommand('generateEmptyEvent', { cityId }),
         InvalidEventError,
         'error thrown when command creates an invalid event',
@@ -205,7 +205,7 @@ test('applyEvent throws error', async t => {
 
     // This should trigger an event of type 'BAD_EVENT', which in turn
     // should trigger an error in the brokenCity aggregate's applyEvent().
-    await t.throws(
+    await t.throwsAsync(
         runCommand('generateBadEvent', { cityId }),
         EventPayloadError,
         'error thrown when command creates an event that fails at applyEvent',
@@ -231,7 +231,7 @@ test('validateState throws error', async t => {
 
     // This violate's the library's invariant that an active library must have a
     // name.
-    await t.throws(
+    await t.throwsAsync(
         runCommand('activateLibrary', { libraryId }),
         InvariantViolatedError,
         'error thrown when command creates an event that validateState rejects',
@@ -261,7 +261,7 @@ test('retries - using defaultCommandRetries', async t => {
     sinon.replace(eventRepository, 'writeEvent', writeEvent);
 
     // Note: setLibraryCityName has no specific retries value, so we should use default
-    await t.throws(
+    await t.throwsAsync(
         runCommand('setLibraryCityName', { libraryId, name: 'Encino' }),
         MaxCommandAttemptsError,
         'error thrown when we reach max retries trying to write event',
@@ -293,7 +293,7 @@ test('retries - command specific setting', async t => {
     sinon.replace(eventRepository, 'writeEvent', writeEvent);
 
     // Note: setLibraryName has retries set to 3
-    await t.throws(
+    await t.throwsAsync(
         runCommand('setLibraryName', { libraryId, name: 'North' }),
         MaxCommandAttemptsError,
         'error thrown when we reach max retries trying to write event',
@@ -312,17 +312,17 @@ test('successful command', async t => {
         libraryId,
     } = await setupTest();
 
-    await t.notThrows(
+    await t.notThrowsAsync(
         runCommand('createLibrary', { libraryId }),
         'able to run createLibrary',
     );
 
-    await t.notThrows(
+    await t.notThrowsAsync(
         runCommand('setLibraryName', { libraryId, name: 'North' }),
         'able to run setLibraryName',
     );
 
-    await t.notThrows(
+    await t.notThrowsAsync(
         runCommand('setLibraryCityName', { libraryId, name: 'Omaha' }),
         'able to run setLibraryCityName',
     );
@@ -423,7 +423,7 @@ test('successful command, with retry', async t => {
     });
     sinon.replace(eventRepository, 'writeEvent', writeEvent);
 
-    await t.notThrows(
+    await t.notThrowsAsync(
         runCommand('createLibrary', { libraryId }),
         'able to run createLibrary',
     );
@@ -491,27 +491,27 @@ test('authorization', async t => {
     const { runCommand: runCommandJohn } = connect(users.johnDoe);
 
     // marySmith had read-only privileges
-    await t.throws(
+    await t.throwsAsync(
         runCommandMary('createLibrary', { libraryId: libraryId1 }),
         UnauthorizedError,
         'error thrown when marySmith tries to run createLibrary',
     );
 
     // johnDoe cannot run the create command on libraries
-    await t.throws(
+    await t.throwsAsync(
         runCommandJohn('createLibrary', { libraryId: libraryId1 }),
         UnauthorizedError,
         'error thrown when johnDoe tries to run createLibrary',
     );
 
     // superSally can do anything
-    await t.notThrows(
+    await t.notThrowsAsync(
         runCommandSally('createLibrary', { libraryId: libraryId1 }),
         'superSally is allowed to run createLibrary',
     );
 
     // johnDoe can set the library name on library1
-    await t.notThrows(
+    await t.notThrowsAsync(
         runCommandJohn('setLibraryName', {
             libraryId: libraryId1,
             name: 'Smith',
@@ -520,13 +520,13 @@ test('authorization', async t => {
     );
 
     // Have superSally create a second library
-    await t.notThrows(
+    await t.notThrowsAsync(
         runCommandSally('createLibrary', { libraryId: libraryId2 }),
         'superSally is allowed to run createLibrary',
     );
 
     // johnDoe is not allowed to set the library name on library2
-    await t.throws(
+    await t.throwsAsync(
         runCommandJohn('setLibraryName', {
             libraryId: libraryId2,
             name: 'Johnson',

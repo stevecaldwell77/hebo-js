@@ -537,32 +537,32 @@ test('authorization', async t => {
             user,
         });
 
-    await t.notThrows(
+    await t.notThrowsAsync(
         run(libraryId1, users.superSally),
         'superuser able to run getProjection() on first library',
     );
 
-    await t.notThrows(
+    await t.notThrowsAsync(
         run(libraryId1, users.marySmith),
         'read-all user is able to run getProjection() on first library',
     );
 
-    await t.notThrows(
+    await t.notThrowsAsync(
         run(libraryId1, users.johnDoe),
         'library-specific user is able to run getProjection() on first library',
     );
 
-    await t.notThrows(
+    await t.notThrowsAsync(
         run(libraryId2, users.superSally),
         'superuser able to run getProjection() on second library',
     );
 
-    await t.notThrows(
+    await t.notThrowsAsync(
         run(libraryId2, users.marySmith),
         'read-all user is able to run getProjection() on second library',
     );
 
-    await t.throws(
+    await t.throwsAsync(
         run(libraryId2, users.johnDoe),
         UnauthorizedError,
         'error thrown when library-specific user runs getProjection() on a ' +
