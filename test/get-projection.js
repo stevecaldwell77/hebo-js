@@ -83,6 +83,80 @@ const runGetProjection = async ({
     };
 };
 
+/*
+
+Setup a repository with some invalid events that theoretically should not have
+been allowed into the event store. But maybe they were valid at the time, and
+our rules changed later.
+
+Will add the following events:
+
+  * invalid: missing a name in the payload
+  * invalid: library doesn't have any books yet.
+  * Valid (sets libary name)
+  * invalid: missing metadata. (maybe from bug in the event repository implementation)
+
+*/
+const setupInvalidEventRepository = async () => {
+    const { libraryId, eventRepository } = await setupBasicLibrary(
+        'North Branch',
+        'Los Angeles',
+    );
+
+    const invalidEvent1 = {
+        aggregateName: 'library',
+        aggregateId: libraryId,
+        eventId: uuid(),
+        type: 'CITY_NAME_SET',
+        payload: {},
+        metadata: {
+            user: users.superSally,
+        },
+        sequenceNumber: 3,
+    };
+    await eventRepository.writeEvent(invalidEvent1);
+
+    const invalidEvent2 = {
+        aggregateName: 'library',
+        aggregateId: libraryId,
+        eventId: uuid(),
+        type: 'ACTIVATED',
+        payload: {},
+        metadata: {
+            user: users.superSally,
+        },
+        sequenceNumber: 4,
+    };
+    await eventRepository.writeEvent(invalidEvent2);
+
+    await eventRepository.writeEvent({
+        aggregateName: 'library',
+        aggregateId: libraryId,
+        eventId: uuid(),
+        type: 'NAME_SET',
+        payload: { name: 'Rodgers Branch' },
+        metadata: {
+            user: users.superSally,
+        },
+        sequenceNumber: 5,
+    });
+
+    const invalidEvent3 = {
+        aggregateName: 'library',
+        aggregateId: libraryId,
+        eventId: uuid(),
+        type: 'CITY_NAME_SET',
+        payload: {
+            name: 'Playa Vista',
+        },
+        sequenceNumber: 6,
+    };
+    await eventRepository.forceWriteEvent(invalidEvent3);
+
+    const invalidEvents = [invalidEvent1, invalidEvent2, invalidEvent3];
+    return { libraryId, eventRepository, invalidEvents };
+};
+
 const testGetProjection = async ({
     t,
     label,
@@ -305,76 +379,17 @@ test('aggregate with snapshots', async t => {
     });
 });
 
-// // Test calling getProjection() with a event store that has a bad event
+// Test calling getProjection() with a event store that has a bad event
 test('handing bad events', async t => {
-    const { libraryId, eventRepository } = await setupBasicLibrary(
-        'North Branch',
-        'Los Angeles',
-    );
+    const {
+        libraryId,
+        eventRepository,
+        invalidEvents,
+    } = await setupInvalidEventRepository();
     const snapshotRepository = getEmptySnapshotRepository();
     const authorizer = getAuthorizer(libraryId);
 
-    // Add some invalid events that theoretically should not have been allowed
-    // into the event store. But maybe they were valid at the time, and our
-    // rules changed later.
-
-    // Invalid event: missing a name in the payload.
-    const invalidEvent1 = {
-        aggregateName: 'library',
-        aggregateId: libraryId,
-        eventId: uuid(),
-        type: 'CITY_NAME_SET',
-        payload: {},
-        metadata: {
-            user: users.superSally,
-        },
-        sequenceNumber: 3,
-    };
-    await eventRepository.writeEvent(invalidEvent1);
-
-    // Invalid event: our library doesn't have any books yet.
-    const invalidEvent2 = {
-        aggregateName: 'library',
-        aggregateId: libraryId,
-        eventId: uuid(),
-        type: 'ACTIVATED',
-        payload: {},
-        metadata: {
-            user: users.superSally,
-        },
-        sequenceNumber: 4,
-    };
-    await eventRepository.writeEvent(invalidEvent2);
-
-    // Now add a valid event. This event should be successfully applied to the
-    // projection.
-    await eventRepository.writeEvent({
-        aggregateName: 'library',
-        aggregateId: libraryId,
-        eventId: uuid(),
-        type: 'NAME_SET',
-        payload: { name: 'Rodgers Branch' },
-        metadata: {
-            user: users.superSally,
-        },
-        sequenceNumber: 5,
-    });
-
-    // One more invalid event: missing metadata. This is going to fail the basic
-    // validateEvent() check - i.e. our framework doesn't recognize this as a
-    // valid event. This could happen if there was an error in the event
-    // repository implementation.
-    const invalidEvent3 = {
-        aggregateName: 'library',
-        aggregateId: libraryId,
-        eventId: uuid(),
-        type: 'CITY_NAME_SET',
-        payload: {
-            name: 'Playa Vista',
-        },
-        sequenceNumber: 6,
-    };
-    await eventRepository.forceWriteEvent(invalidEvent3);
+    const [invalidEvent1, invalidEvent2, invalidEvent3] = invalidEvents;
 
     // Expected:
     //  * The bad events are stored to invalidEvents
@@ -518,6 +533,36 @@ test('handing bad events', async t => {
         expectedGetEventsCalls: [['library', libraryId, 6]],
         expectedNotifications: [],
     });
+});
+
+// Test calling getProjection() with a event store that has a bad event, but
+// with throwOnInvalidEvent set to true
+test('handing bad events - w/ throwOnInvalidEvent', async t => {
+    const { libraryId, eventRepository } = await setupInvalidEventRepository();
+    const snapshotRepository = getEmptySnapshotRepository();
+    const notificationHandler = new NotificationHandler();
+    const authorizer = getAuthorizer(libraryId);
+
+    const hebo = new Hebo({
+        aggregates: {
+            library: libraryAggregate,
+        },
+        throwOnInvalidEvent: true,
+    });
+
+    const { getProjection } = hebo.connect({
+        eventRepository,
+        snapshotRepository,
+        notificationHandler,
+        authorizer,
+        user: users.superSally,
+    });
+
+    await t.throwsAsync(
+        getProjection('library', libraryId),
+        /event payload missing "name"/,
+        'error thrown when invalid event fetched from repository and throwOnInvalidEvent is true',
+    );
 });
 
 test('authorization', async t => {

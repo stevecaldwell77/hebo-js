@@ -129,20 +129,30 @@ const eventReducer = ({ applyEvent, validateState }) => (
 const applyEvents = ({ prevProjection, events, applyEvent, validateState }) =>
     events.reduce(eventReducer({ applyEvent, validateState }), prevProjection);
 
-// Emit a notification if we produced an aggregate with invalid events.
-const notifyIfInvalidEvents = async (
+// Handle use case where we produced an aggregate with invalid events.
+//  1. Emit a notification
+//  2. Conditionally throw an error
+const handleInvalidEvents = async ({
     aggregateName,
     aggregateId,
-    projection,
+    invalidEvents,
     notifier,
-) => {
-    if (projection.invalidEvents.length > 0) {
-        const eventIds = projection.invalidEvents.map(e => e.eventId);
-        await notifier.emit('invalidEventsFound', {
-            aggregateName,
-            aggregateId,
-            eventIds,
-        });
+    doThrow,
+}) => {
+    const eventIds = invalidEvents.map(e => e.eventId);
+    await notifier.emit('invalidEventsFound', {
+        aggregateName,
+        aggregateId,
+        eventIds,
+    });
+
+    if (doThrow) {
+        const invalidEvent = invalidEvents[0];
+        const { eventId, error } = invalidEvent;
+        const { name, message } = error;
+        throw new Error(
+            `Invalid event found in event store for ${aggregateName} ${aggregateId}: eventId ${eventId}: ${name}: ${message}`,
+        );
     }
 };
 
@@ -190,6 +200,8 @@ Parameters:
    * 'none' (default) - return undefined
    * 'newProjection' - return an initialized projection
 
+  throwOnInvalidEvent: throw error if an invalid event is found in the event repository
+
 Return value: Promise containing projection.
 
  */
@@ -205,6 +217,7 @@ const getProjection = async ({
     assertAuthorized,
     user,
     missValue = 'none',
+    throwOnInvalidEvent = false,
 }) => {
     // authorize user
     await assertAuthorized(user, {
@@ -242,13 +255,15 @@ const getProjection = async ({
         validateState,
     });
 
-    // Notify about any errors
-    await notifyIfInvalidEvents(
-        aggregateName,
-        aggregateId,
-        projection,
-        notifier,
-    );
+    if (projection.invalidEvents.length > 0) {
+        await handleInvalidEvents({
+            aggregateName,
+            aggregateId,
+            invalidEvents: projection.invalidEvents,
+            notifier,
+            doThrow: throwOnInvalidEvent,
+        });
+    }
 
     // Return the built projection
     return projection;

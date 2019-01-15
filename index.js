@@ -70,6 +70,7 @@ const makeGetProjection = ({
     authorizer,
     user,
     notifier,
+    throwOnInvalidEvent,
 }) => async (aggregateName, aggregateId, opts = {}) => {
     if (!has(aggregates, aggregateName)) {
         throw new UnknownAggregateError(aggregateName);
@@ -87,6 +88,7 @@ const makeGetProjection = ({
         assertAuthorized: authorizer.assert,
         user,
         missValue: opts.missValue,
+        throwOnInvalidEvent,
     });
     return result;
 };
@@ -174,6 +176,7 @@ const heboSchema = Joi.object().keys({
         .integer()
         .positive()
         .default(10),
+    throwOnInvalidEvent: Joi.boolean().default(false),
 });
 
 const connectSchema = Joi.object().keys({
@@ -195,6 +198,7 @@ module.exports = class Hebo {
         this.aggregates = params.aggregates;
         this.commandAggregate = mapCommandsToAggregates(this.aggregates);
         this.defaultCommandRetries = params.defaultCommandRetries;
+        this.throwOnInvalidEvent = params.throwOnInvalidEvent;
     }
 
     // NOTE: see connectSchema for allowed params
@@ -207,6 +211,7 @@ module.exports = class Hebo {
             ...params,
             aggregates,
             notifier,
+            throwOnInvalidEvent: this.throwOnInvalidEvent,
         });
         const updateSnapshot = makeUpdateSnapshot({
             ...params,
