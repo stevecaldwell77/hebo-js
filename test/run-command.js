@@ -79,7 +79,7 @@ const makeEventRepository = () =>
 const makeSnapshotRepository = () =>
     new SnapshotRepository({ aggregates: ['library', 'brokenCity'] });
 
-const setupTest = () => {
+const setupTest = ({ eventMetadata } = {}) => {
     const libraryId = shortid.generate();
     const eventRepository = makeEventRepository();
     const notificationHandler = new NotificationHandler();
@@ -92,6 +92,7 @@ const setupTest = () => {
         notificationHandler,
         authorizer,
         user: users.superSally,
+        eventMetadata,
     });
 
     return {
@@ -197,9 +198,7 @@ test('applyEvent throws error', async t => {
         eventId: uuid(),
         type: 'CREATED',
         payload: { cityId },
-        metadata: {
-            user: users.superSally,
-        },
+        metadata: {},
         sequenceNumber: 1,
     });
 
@@ -223,9 +222,7 @@ test('validateState throws error', async t => {
         eventId: uuid(),
         type: 'CREATED',
         payload: { libraryId },
-        metadata: {
-            user: users.superSally,
-        },
+        metadata: {},
         sequenceNumber: 1,
     });
 
@@ -250,9 +247,7 @@ test('retries - using defaultCommandRetries', async t => {
         eventId: uuid(),
         type: 'CREATED',
         payload: { libraryId },
-        metadata: {
-            user: users.superSally,
-        },
+        metadata: {},
         sequenceNumber: 1,
     });
 
@@ -282,9 +277,7 @@ test('retries - command specific setting', async t => {
         eventId: uuid(),
         type: 'CREATED',
         payload: { libraryId },
-        metadata: {
-            user: users.superSally,
-        },
+        metadata: {},
         sequenceNumber: 1,
     });
 
@@ -342,7 +335,7 @@ test('successful command', async t => {
                 aggregateName: 'library',
                 aggregateId: libraryId,
                 eventId: eventIds[0],
-                metadata: { user: users.superSally },
+                metadata: {},
                 sequenceNumber: 1,
                 type: 'CREATED',
                 payload: { libraryId },
@@ -351,7 +344,7 @@ test('successful command', async t => {
                 aggregateName: 'library',
                 aggregateId: libraryId,
                 eventId: eventIds[1],
-                metadata: { user: users.superSally },
+                metadata: {},
                 sequenceNumber: 2,
                 type: 'NAME_SET',
                 payload: { name: 'North' },
@@ -360,7 +353,7 @@ test('successful command', async t => {
                 aggregateName: 'library',
                 aggregateId: libraryId,
                 eventId: eventIds[2],
-                metadata: { user: users.superSally },
+                metadata: {},
                 sequenceNumber: 3,
                 type: 'CITY_NAME_SET',
                 payload: { name: 'Omaha' },
@@ -440,7 +433,7 @@ test('successful command, with retry', async t => {
                 aggregateName: 'library',
                 aggregateId: libraryId,
                 eventId: events[0].eventId,
-                metadata: { user: users.superSally },
+                metadata: {},
                 sequenceNumber: 1,
                 type: 'CREATED',
                 payload: { libraryId },
@@ -465,6 +458,29 @@ test('successful command, with retry', async t => {
         notifications,
         expectedNotifications,
         'expected notifications generated',
+    );
+});
+
+test('metadata written to events', async t => {
+    const user = users.superSally;
+    const metadata = { user };
+    const { runCommand, eventRepository, libraryId } = await setupTest({
+        eventMetadata: metadata,
+    });
+
+    await runCommand('createLibrary', { libraryId });
+    await runCommand(
+        'setLibraryName',
+        { libraryId, name: 'North' },
+        { appId: 1234 },
+    );
+
+    const events = await eventRepository.getEvents('library', libraryId);
+
+    t.deepEqual(
+        events.map(e => e.metadata),
+        [{ user }, { user, appId: 1234 }],
+        'command metadata stored to events',
     );
 });
 

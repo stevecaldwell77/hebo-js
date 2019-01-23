@@ -123,7 +123,8 @@ const makeRunCommand = ({
     getProjection,
     commandAggregate,
     defaultRetries,
-}) => async (commandName, params) => {
+    eventMetadata: baseMetadata,
+}) => async (commandName, params, metadata = {}) => {
     const aggregateName = commandAggregate[commandName];
     if (!aggregateName) {
         throw new UnknownCommandError('UNKNOWN', commandName);
@@ -149,6 +150,8 @@ const makeRunCommand = ({
         validateParams,
     } = command;
 
+    const allMetadata = { ...baseMetadata, ...metadata };
+
     const result = await runCommand({
         aggregateName,
         aggregateId,
@@ -166,6 +169,7 @@ const makeRunCommand = ({
         notifier,
         assertAuthorized: authorizer.assert,
         user,
+        metadata: allMetadata,
     });
     return result;
 };
@@ -185,6 +189,7 @@ const connectSchema = Joi.object().keys({
     notificationHandler: notificationHandlerSchema.required(),
     authorizer: authorizerSchema.required(),
     user: Joi.any(),
+    eventMetadata: Joi.object().default({}),
 });
 
 module.exports = class Hebo {

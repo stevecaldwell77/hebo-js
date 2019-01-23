@@ -51,7 +51,7 @@ const createEvent = ({
     aggregateName,
     aggregateId,
     params,
-    user,
+    metadata,
     sequenceNumber,
 }) => {
     const eventDetails = runCreateEvent(params);
@@ -59,7 +59,7 @@ const createEvent = ({
         aggregateName,
         aggregateId,
         eventId: uuid(),
-        metadata: { user },
+        metadata,
         sequenceNumber,
         ...eventDetails,
     };
@@ -107,6 +107,8 @@ Parameters:
 
   user: User object to use for authorization, and to store to event.
 
+  metadata: metadata to attach to created events.
+
   assertAuthorized: Function to assert that user is authorized to perform
     operation. Should throw an error if not.
     Signature: (user, operation) -> Promise(void)
@@ -132,6 +134,7 @@ const runCommand = async args => {
         notifier,
         assertAuthorized,
         user,
+        metadata,
         attempts = 0,
     } = args;
 
@@ -167,7 +170,7 @@ const runCommand = async args => {
         aggregateName,
         aggregateId,
         params,
-        user,
+        metadata,
         sequenceNumber: projection.version + 1,
     });
 
