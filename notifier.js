@@ -3,10 +3,10 @@ class Notifier {
         this.notificationHandler = notificationHandler;
     }
 
-    async emit(eventName, args) {
+    async emit(eventName, ...args) {
         const handler = this.notificationHandler[eventName];
         if (handler) {
-            await handler(args);
+            await handler(...args);
         }
     }
 }
