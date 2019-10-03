@@ -1,4 +1,3 @@
-const EventEmitter = require('events');
 const forIn = require('lodash/forIn');
 const isNil = require('lodash/isNil');
 const has = require('lodash/has');
@@ -23,6 +22,7 @@ const {
 const getProjection = require('./get-projection');
 const updateSnapshot = require('./update-snapshot');
 const runCommand = require('./run-command');
+const Notifier = require('./notifier');
 
 // validate aggregates input
 const validateAggregates = aggregates => {
@@ -54,14 +54,6 @@ const mapCommandsToAggregates = compose(
     ),
     toPairs,
 );
-
-// Creates an EventEmitter object and wires up listeners
-const createNotifier = notificationHandler => {
-    const notifier = new EventEmitter();
-    notifier.on('invalidEventsFound', notificationHandler.invalidEventsFound);
-    notifier.on('eventWritten', notificationHandler.eventWritten);
-    return notifier;
-};
 
 const makeGetProjection = ({
     aggregates,
@@ -210,7 +202,7 @@ module.exports = class Hebo {
     connect(params) {
         Joi.assert(params, connectSchema, 'Invalid parameters to connect()');
         const { notificationHandler } = params;
-        const notifier = createNotifier(notificationHandler);
+        const notifier = new Notifier(notificationHandler);
         const { aggregates } = this;
         const getProjection = makeGetProjection({
             ...params,

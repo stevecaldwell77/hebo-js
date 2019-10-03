@@ -102,7 +102,7 @@ Parameters:
 
   retries: How many times should the command be retried if we fail to write it.
 
-  notifier: EventEmitter object. Notifications emitted:
+  notifier: Notifier object. Notifications emitted:
     * 'eventWritten' - an event was succesfully written.
 
   user: User object to use for authorization, and to store to event.

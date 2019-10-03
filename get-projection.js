@@ -186,7 +186,7 @@ Parameters:
     if the state violates one of its aggregate's invariants.
     Signature: (state) -> void
 
-  notifier: EventEmitter object. Notifications emitted:
+  notifier: Notifier object. Notifications emitted:
     * 'invalidEventsFound' - an invalid event was found in the build projection.
 
   user: User object to use for authorization.
