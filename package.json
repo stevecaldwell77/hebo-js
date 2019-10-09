@@ -46,8 +46,6 @@
     "nyc": "^13.0.1",
     "prettier": "^1.18.2",
     "prettier-config-archereducation": "^1.0.0",
-    "remark-cli": "^5.0.0",
-    "remark-preset-github": "^0.0.9",
     "sinon": "^6.3.4"
   },
   "engines": {
@@ -72,10 +70,6 @@
         "yarn lint --fix",
         "git add"
       ],
-      "*.md": [
-        "remark . -qfo",
-        "git add"
-      ],
       "package.json": [
         "fixpack",
         "git add"
@@ -94,11 +88,6 @@
       "text"
     ]
   },
-  "remarkConfig": {
-    "plugins": [
-      "preset-github"
-    ]
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/stevecaldwell77/hebo-js"
@@ -106,7 +95,7 @@
   "scripts": {
     "ava": "cross-env NODE_ENV=test ava",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
-    "lint": "remark . -qfo && eslint .",
+    "lint": "eslint .",
     "nyc": "cross-env NODE_ENV=test nyc ava",
     "test": "npm run lint && npm run ava",
     "test-coverage": "npm run lint && npm run nyc"
