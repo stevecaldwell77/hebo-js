@@ -42,7 +42,7 @@
     "hebo-notification-handler-inmemory": "^1.4.0",
     "hebo-snapshot-repository-inmemory": "^1.4.0",
     "husky": "^1.1.2",
-    "lint-staged": "^8.2.1",
+    "lint-staged": "^9.4.2",
     "nyc": "^13.0.1",
     "prettier": "^1.18.2",
     "prettier-config-archereducation": "^1.0.0",
@@ -65,16 +65,14 @@
   ],
   "license": "MIT",
   "lint-staged": {
-    "linters": {
-      "*.js": [
-        "yarn lint --fix",
-        "git add"
-      ],
-      "package.json": [
-        "fixpack",
-        "git add"
-      ]
-    }
+    "*.js": [
+      "yarn lint --fix",
+      "git add"
+    ],
+    "package.json": [
+      "fixpack",
+      "git add"
+    ]
   },
   "main": "index.js",
   "nyc": {
