@@ -5,7 +5,14 @@
   "author": "Steve Caldwell <scaldwell@gmail.com>",
   "ava": {
     "failFast": true,
-    "verbose": true
+    "verbose": true,
+    "files": [
+      "test/**/*"
+    ],
+    "helpers": [
+      "**/helpers/**/*",
+      "**/fixtures/**/*"
+    ]
   },
   "bugs": {
     "url": "https://github.com/stevecaldwell77/hebo-js/issues",
