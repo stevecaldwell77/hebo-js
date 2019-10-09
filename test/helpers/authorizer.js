@@ -51,6 +51,7 @@ const isAuthorized = ({ operation, user, libraryId }) => {
                 operation.aggregateId === libraryId
             );
         }
+
         default:
             return false;
     }

@@ -16,9 +16,9 @@ const validateParams = ({
 }) => {
     try {
         runValidateParams(params);
-    } catch (err) {
+    } catch (error) {
         throw new InvalidCommandParamsError(
-            err.message,
+            error.message,
             aggregateName,
             commandName,
         );
@@ -40,9 +40,11 @@ const getProjection = async ({
     if (isCreateCommand && !newProjection) {
         throw new DuplicateAggregateError(aggregateName, aggregateId);
     }
+
     if (!isCreateCommand && newProjection) {
         throw new AggregateNotFoundError(aggregateName, aggregateId);
     }
+
     return projection;
 };
 
