@@ -4,7 +4,6 @@ const shortid = require('shortid');
 const EventRepository = require('hebo-event-repository-inmemory');
 const SnapshotRepository = require('hebo-snapshot-repository-inmemory');
 const NotificationHandler = require('hebo-notification-handler-inmemory');
-const Hebo = require('..');
 const {
     InvalidAggregateError,
     InvalidCommandError,
@@ -13,6 +12,7 @@ const {
 } = require('hebo-validation');
 const libraryAggregate = require('./helpers/aggregates/library');
 const { users, getAuthorizer } = require('./helpers/authorizer');
+const Hebo = require('..');
 
 test('constructor()', t => {
     const validParams = {

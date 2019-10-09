@@ -9,9 +9,9 @@ const {
     UnauthorizedError,
     AggregateNotFoundError,
 } = require('hebo-validation');
-const Hebo = require('..');
 const libraryAggregate = require('./helpers/aggregates/library');
 const { users, getAuthorizer } = require('./helpers/authorizer');
+const Hebo = require('..');
 
 const hebo = new Hebo({
     aggregates: {

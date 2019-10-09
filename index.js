@@ -37,6 +37,7 @@ const validateAggregates = aggregates => {
                     commandName,
                 );
             }
+
             commands.add(commandName);
         });
     });
@@ -67,6 +68,7 @@ const makeGetProjection = ({
     if (!has(aggregates, aggregateName)) {
         throw new UnknownAggregateError(aggregateName);
     }
+
     const aggregate = aggregates[aggregateName];
     const result = await getProjection({
         aggregateName,
@@ -95,6 +97,7 @@ const makeUpdateSnapshot = ({
     if (!has(aggregates, aggregateName)) {
         throw new UnknownAggregateError(aggregateName);
     }
+
     const result = await updateSnapshot({
         aggregateName,
         aggregateId,

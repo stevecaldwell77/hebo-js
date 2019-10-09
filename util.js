@@ -21,6 +21,7 @@ module.exports.getRequiredPayloadValue = (event, key) => {
     if (isNil(val)) {
         throw new EventPayloadError(event, key);
     }
+
     return event.payload[key];
 };
 

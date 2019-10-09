@@ -36,6 +36,7 @@ const getResolvedEvents = ({ prevProjection, event }) => {
     if (!(resolvesEventIds && resolvesEventIds.length > 0)) {
         return [];
     }
+
     const eventIdSet = new Set(resolvesEventIds);
     return prevProjection.invalidEvents.filter(e => eventIdSet.has(e.eventId));
 };
@@ -77,10 +78,10 @@ const handleValidEvent = ({ prevProjection, event, newState }) => {
 };
 
 // Handles an event that threw an error when applied.
-const handleBadEvent = ({ prevProjection, event, err }) => {
+const handleBadEvent = ({ prevProjection, event, error }) => {
     const condensedError = {
-        name: err.name,
-        message: err.message,
+        name: error.name,
+        message: error.message,
     };
     return {
         ...prevProjection,
@@ -115,13 +116,14 @@ const eventReducer = ({ applyEvent, validateState }) => (
             event,
             newState,
         });
-    } catch (err) {
+    } catch (error) {
         result = handleBadEvent({
             prevProjection,
             event,
-            err,
+            error,
         });
     }
+
     return result;
 };
 

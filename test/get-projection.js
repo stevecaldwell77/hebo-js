@@ -6,9 +6,9 @@ const EventRepository = require('hebo-event-repository-inmemory');
 const SnapshotRepository = require('hebo-snapshot-repository-inmemory');
 const NotificationHandler = require('hebo-notification-handler-inmemory');
 const { UnauthorizedError } = require('hebo-validation');
-const Hebo = require('..');
 const libraryAggregate = require('./helpers/aggregates/library');
 const { users, getAuthorizer } = require('./helpers/authorizer');
+const Hebo = require('..');
 
 const hebo = new Hebo({
     aggregates: {

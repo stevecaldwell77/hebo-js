@@ -6,7 +6,6 @@ const Joi = require('joi');
 const EventRepository = require('hebo-event-repository-inmemory');
 const SnapshotRepository = require('hebo-snapshot-repository-inmemory');
 const NotificationHandler = require('hebo-notification-handler-inmemory');
-const Hebo = require('..');
 const {
     AggregateNotFoundError,
     DuplicateAggregateError,
@@ -21,6 +20,7 @@ const {
 const { makeValidator } = require('../util');
 const libraryAggregate = require('./helpers/aggregates/library');
 const { users, getAuthorizer } = require('./helpers/authorizer');
+const Hebo = require('..');
 
 const cityIdValidator = makeValidator(
     Joi.string()
@@ -38,6 +38,7 @@ const brokenCityAggregate = {
             if (event.type === 'BAD_EVENT') {
                 throw new EventPayloadError(event, 'iWillNeverExist');
             }
+
             return prevState;
         },
         validateState: () => {},
