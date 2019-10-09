@@ -35,6 +35,8 @@
     "casual": "^1.5.19",
     "codecov": "^3.1.0",
     "cross-env": "^5.2.0",
+    "eslint": "^6.5.1",
+    "eslint-config-archereducation": "^4.3.0",
     "fixpack": "^2.3.1",
     "hebo-event-repository-inmemory": "^3.0.2",
     "hebo-notification-handler-inmemory": "^1.0.1",
@@ -42,6 +44,8 @@
     "husky": "^1.1.2",
     "lint-staged": "^7.3.0",
     "nyc": "^13.0.1",
+    "prettier": "^1.18.2",
+    "prettier-config-archereducation": "^1.0.0",
     "remark-cli": "^5.0.0",
     "remark-preset-github": "^0.0.9",
     "sinon": "^6.3.4"
@@ -65,6 +69,7 @@
   "lint-staged": {
     "linters": {
       "*.js": [
+        "yarn lint --fix",
         "git add"
       ],
       "*.md": [
@@ -89,13 +94,6 @@
       "text"
     ]
   },
-  "prettier": {
-    "singleQuote": true,
-    "useTabs": false,
-    "bracketSpacing": true,
-    "trailingComma": "all",
-    "tabWidth": 4
-  },
   "remarkConfig": {
     "plugins": [
       "preset-github"
@@ -108,7 +106,7 @@
   "scripts": {
     "ava": "cross-env NODE_ENV=test ava",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
-    "lint": "remark . -qfo",
+    "lint": "eslint . && remark . -qfo",
     "nyc": "cross-env NODE_ENV=test nyc ava",
     "test": "npm run lint && npm run ava",
     "test-coverage": "npm run lint && npm run nyc"
