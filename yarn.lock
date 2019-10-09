@@ -2832,38 +2832,28 @@ has@^1.0.1, has@^1.0.3:
   dependencies:
     function-bind "^1.1.1"
 
-hebo-event-repository-inmemory@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/hebo-event-repository-inmemory/-/hebo-event-repository-inmemory-3.0.2.tgz#ac18d6d1ecea8c4330bbe3c798269e6a87b8c932"
-  integrity sha512-0On4S+scRLVJ92A0TzP7BadAbzpN5YDK7TXrTBLp6GcaCSpoyAXUdH1Ma+8TrvgBJDPkbh67rXvCu6vC8RQV7g==
+hebo-event-repository-inmemory@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/hebo-event-repository-inmemory/-/hebo-event-repository-inmemory-4.0.0.tgz#328a5f533ca8c315a9da3136288067793398e7d9"
+  integrity sha512-7arWtrGOEOh56O2AVW4UZS+yx9pj1Wi6Luyc0mCYVhnndAuJz0+llK4yWJgfzsYvfd1L9Z5Pn11dRckiK7Fz0g==
   dependencies:
     auto-bind "^1.2.1"
-    hebo-validation "^3.0.0"
+    hebo-validation "^5.0.0"
     lodash "^4.17.11"
 
-hebo-notification-handler-inmemory@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/hebo-notification-handler-inmemory/-/hebo-notification-handler-inmemory-1.0.1.tgz#732e53baeef3aae088efb0eca0a7e9363c3694bd"
-  integrity sha512-KQC4SxG73h09NI+iSpuKAe21h4h9BDTWeMzrJe4bKH6pMf+NZ60MmRhLqKAk8qQhVPTZZLhG7/NsLR0AGPHJ2w==
+hebo-notification-handler-inmemory@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/hebo-notification-handler-inmemory/-/hebo-notification-handler-inmemory-1.4.0.tgz#d98ec4aa13389aac5f3463b685858b2d75a14607"
+  integrity sha512-T9b8hgJLvR/N8jOjmgXvEx/aB7WgdJ03lyUgNLu/JGN1z9+fTSCt7OZHEYHoVplvV7aDPJK2FeyUDZ0z4A1uSg==
   dependencies:
     auto-bind "^1.2.1"
-    hebo "^0.3.3"
 
-hebo-snapshot-repository-inmemory@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/hebo-snapshot-repository-inmemory/-/hebo-snapshot-repository-inmemory-1.0.1.tgz#2be55b33ee6bd703b5b19c48b5011a5d468fd250"
-  integrity sha512-MJzVfw0pa3JCpaWiROd15HmYT7IDE9QxhfYv/7E//ihBq/idq4e8cNN/ARktF3KiaYUTuvVVuET1iymX13tzXA==
+hebo-snapshot-repository-inmemory@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/hebo-snapshot-repository-inmemory/-/hebo-snapshot-repository-inmemory-1.4.0.tgz#bb45c5d12977eee5c74efd4070e6c1d765f62d41"
+  integrity sha512-TaboqEQ8SuKJ/GEhG7ciI+g6lAmmyVsw/Kqb+iOd75Vl2vq2lOoXZLepYENevHnVNIM9DB2/jXFMwE3/zImGNQ==
   dependencies:
     auto-bind "^1.2.1"
-    hebo "^0.3.3"
-    lodash "^4.17.11"
-
-hebo-validation@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/hebo-validation/-/hebo-validation-3.0.0.tgz#1ad6c89e1c1c4c7a8f4d8d05ebdd44eac8d95ff0"
-  integrity sha512-pqet3Oiw0cmZpfMU2LcyLVNSkXBoTrGqbTFrbtIRtL42Kzh+9bVxj1ORm3ENIOEsZqBnC7U24yrIPp3c4zzIUg==
-  dependencies:
-    joi "^13.7.0"
     lodash "^4.17.11"
 
 hebo-validation@^5.0.0:
@@ -2873,16 +2863,6 @@ hebo-validation@^5.0.0:
   dependencies:
     "@hapi/joi" "^16.1.7"
     lodash "^4.17.11"
-
-hebo@^0.3.3:
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/hebo/-/hebo-0.3.3.tgz#5cd273779477092a88033fec93b6debd217726e5"
-  integrity sha512-aWb0OS1G1BCO2Fnr0L6gWzm3neppY5eBIqFj/GEHC0Ttdgk8my018APqBRG7IqM/nXUbpJCHigFxHlPhmZ72fQ==
-  dependencies:
-    immer "^1.7.2"
-    joi "^13.6.0"
-    lodash "^4.17.11"
-    shortid "^2.2.13"
 
 hoek@5.x.x:
   version "5.0.4"
@@ -3451,15 +3431,6 @@ joi@^13.6.0:
   version "13.6.0"
   resolved "https://registry.yarnpkg.com/joi/-/joi-13.6.0.tgz#877d820e3ad688a49c32421ffefc746bfbe2d0a0"
   integrity sha512-E4QB0yRgEa6ZZKcSHJuBC+QeAwy+akCG0Bsa9edLqljyhlr+GuGDSmXYW1q7sj/FuAPy+ECUI3evVtK52tVfwg==
-  dependencies:
-    hoek "5.x.x"
-    isemail "3.x.x"
-    topo "3.x.x"
-
-joi@^13.7.0:
-  version "13.7.0"
-  resolved "https://registry.yarnpkg.com/joi/-/joi-13.7.0.tgz#cfd85ebfe67e8a1900432400b4d03bbd93fb879f"
-  integrity sha512-xuY5VkHfeOYK3Hdi91ulocfuFopwgbSORmIwzcwHKESQhC7w1kD5jaVSPnqDxS2I8t3RZ9omCKAxNwXN5zG1/Q==
   dependencies:
     hoek "5.x.x"
     isemail "3.x.x"
