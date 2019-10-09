@@ -7,7 +7,7 @@ const fromPairs = require('lodash/fp/fromPairs');
 const keys = require('lodash/fp/keys');
 const map = require('lodash/fp/map');
 const toPairs = require('lodash/fp/toPairs');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const {
     eventRepositorySchema,
     snapshotRepositorySchema,

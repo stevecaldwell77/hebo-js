@@ -90,25 +90,25 @@ test('connect() - parameters', t => {
 
     t.throws(
         () => hebo.connect({ ...validParams, eventRepository: {} }),
-        /"getEvents" is required/,
+        /"eventRepository.getEvents" is required/,
         'connect() checks for valid eventRepository',
     );
 
     t.throws(
         () => hebo.connect({ ...validParams, snapshotRepository: {} }),
-        /"getSnapshot" is required/,
+        /"snapshotRepository.getSnapshot" is required/,
         'connect() checks for valid snapshotRepository',
     );
 
     t.throws(
         () => hebo.connect({ ...validParams, notificationHandler: {} }),
-        /"invalidEventsFound" is required/,
+        /"notificationHandler.invalidEventsFound" is required/,
         'connect() checks for valid notificationHandler',
     );
 
     t.throws(
         () => hebo.connect({ ...validParams, authorizer: {} }),
-        /"assert" is required/,
+        /"authorizer.assert" is required/,
         'connect() checks for valid authorizer',
     );
 });

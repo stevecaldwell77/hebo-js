@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const { noop } = require('lodash');
 const { UnknownEventTypeError } = require('hebo-validation');
 const {

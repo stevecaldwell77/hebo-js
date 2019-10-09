@@ -1,7 +1,7 @@
 const { produce } = require('immer');
 const isNil = require('lodash/isNil');
 const has = require('lodash/has');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const {
     EventPayloadError,
     InvariantViolatedError,
