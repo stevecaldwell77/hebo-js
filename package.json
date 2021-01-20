@@ -29,7 +29,7 @@
   "dependencies": {
     "@hapi/joi": "^16.1.7",
     "hebo-validation": "^6.0.0",
-    "immer": "^4.0.1",
+    "immer": "^8.0.1",
     "lodash": "^4.17.15",
     "shortid": "^2.2.15",
     "uuid": "^3.3.3"
