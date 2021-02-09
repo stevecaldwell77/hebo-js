@@ -197,6 +197,8 @@ const runCommand = async args => {
         aggregateName,
         aggregateId,
         eventType: event.type,
+        eventId: event.eventId,
+        sequenceNumber: event.sequenceNumber,
     });
 
     return success;

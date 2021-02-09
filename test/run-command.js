@@ -371,6 +371,8 @@ test('successful command', async t => {
                 aggregateName: 'library',
                 aggregateId: libraryId,
                 eventType: 'CREATED',
+                eventId: eventIds[0],
+                sequenceNumber: 1,
             },
         },
         {
@@ -379,6 +381,8 @@ test('successful command', async t => {
                 aggregateName: 'library',
                 aggregateId: libraryId,
                 eventType: 'NAME_SET',
+                eventId: eventIds[1],
+                sequenceNumber: 2,
             },
         },
         {
@@ -387,6 +391,8 @@ test('successful command', async t => {
                 aggregateName: 'library',
                 aggregateId: libraryId,
                 eventType: 'CITY_NAME_SET',
+                eventId: eventIds[2],
+                sequenceNumber: 3,
             },
         },
     ];
@@ -451,6 +457,8 @@ test('successful command, with retry', async t => {
                 aggregateName: 'library',
                 aggregateId: libraryId,
                 eventType: 'CREATED',
+                eventId: events[0].eventId,
+                sequenceNumber: 1,
             },
         },
     ];
